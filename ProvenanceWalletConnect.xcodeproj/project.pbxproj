@@ -1,0 +1,615 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CF83EC0126D99E7D00BD5CC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */; };
+		CF83EC0326D99E7D00BD5CC8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */; };
+		CF83EC0526D99E7D00BD5CC8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0426D99E7D00BD5CC8 /* ViewController.swift */; };
+		CF83EC0826D99E7D00BD5CC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF83EC0626D99E7D00BD5CC8 /* Main.storyboard */; };
+		CF83EC0B26D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0926D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodeld */; };
+		CF83EC0D26D99E7F00BD5CC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF83EC0C26D99E7F00BD5CC8 /* Assets.xcassets */; };
+		CF83EC1026D99E7F00BD5CC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF83EC0E26D99E7F00BD5CC8 /* LaunchScreen.storyboard */; };
+		CF83EC1B26D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC1A26D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.swift */; };
+		CF83EC2626D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC2526D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CF83EC1726D99E7F00BD5CC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF83EBF526D99E7D00BD5CC8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF83EBFC26D99E7D00BD5CC8;
+			remoteInfo = ProvenanceWalletConnect;
+		};
+		CF83EC2226D99E7F00BD5CC8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF83EBF526D99E7D00BD5CC8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF83EBFC26D99E7D00BD5CC8;
+			remoteInfo = ProvenanceWalletConnect;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CF83EBFD26D99E7D00BD5CC8 /* ProvenanceWalletConnect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProvenanceWalletConnect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		CF83EC0426D99E7D00BD5CC8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CF83EC0726D99E7D00BD5CC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CF83EC0A26D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProvenanceWalletConnect.xcdatamodel; sourceTree = "<group>"; };
+		CF83EC0C26D99E7F00BD5CC8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CF83EC0F26D99E7F00BD5CC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		CF83EC1126D99E7F00BD5CC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF83EC1626D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProvenanceWalletConnectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF83EC1A26D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvenanceWalletConnectTests.swift; sourceTree = "<group>"; };
+		CF83EC1C26D99E7F00BD5CC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF83EC2126D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProvenanceWalletConnectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF83EC2526D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvenanceWalletConnectUITests.swift; sourceTree = "<group>"; };
+		CF83EC2726D99E7F00BD5CC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF83EBFA26D99E7D00BD5CC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1326D99E7F00BD5CC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1E26D99E7F00BD5CC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CF83EBF426D99E7D00BD5CC8 = {
+			isa = PBXGroup;
+			children = (
+				CF83EBFF26D99E7D00BD5CC8 /* ProvenanceWalletConnect */,
+				CF83EC1926D99E7F00BD5CC8 /* ProvenanceWalletConnectTests */,
+				CF83EC2426D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests */,
+				CF83EBFE26D99E7D00BD5CC8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CF83EBFE26D99E7D00BD5CC8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF83EBFD26D99E7D00BD5CC8 /* ProvenanceWalletConnect.app */,
+				CF83EC1626D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.xctest */,
+				CF83EC2126D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CF83EBFF26D99E7D00BD5CC8 /* ProvenanceWalletConnect */ = {
+			isa = PBXGroup;
+			children = (
+				CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */,
+				CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */,
+				CF83EC0426D99E7D00BD5CC8 /* ViewController.swift */,
+				CF83EC0626D99E7D00BD5CC8 /* Main.storyboard */,
+				CF83EC0C26D99E7F00BD5CC8 /* Assets.xcassets */,
+				CF83EC0E26D99E7F00BD5CC8 /* LaunchScreen.storyboard */,
+				CF83EC1126D99E7F00BD5CC8 /* Info.plist */,
+				CF83EC0926D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodeld */,
+			);
+			path = ProvenanceWalletConnect;
+			sourceTree = "<group>";
+		};
+		CF83EC1926D99E7F00BD5CC8 /* ProvenanceWalletConnectTests */ = {
+			isa = PBXGroup;
+			children = (
+				CF83EC1A26D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.swift */,
+				CF83EC1C26D99E7F00BD5CC8 /* Info.plist */,
+			);
+			path = ProvenanceWalletConnectTests;
+			sourceTree = "<group>";
+		};
+		CF83EC2426D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests */ = {
+			isa = PBXGroup;
+			children = (
+				CF83EC2526D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.swift */,
+				CF83EC2726D99E7F00BD5CC8 /* Info.plist */,
+			);
+			path = ProvenanceWalletConnectUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF83EBFC26D99E7D00BD5CC8 /* ProvenanceWalletConnect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF83EC2A26D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnect" */;
+			buildPhases = (
+				CF83EBF926D99E7D00BD5CC8 /* Sources */,
+				CF83EBFA26D99E7D00BD5CC8 /* Frameworks */,
+				CF83EBFB26D99E7D00BD5CC8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ProvenanceWalletConnect;
+			productName = ProvenanceWalletConnect;
+			productReference = CF83EBFD26D99E7D00BD5CC8 /* ProvenanceWalletConnect.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CF83EC1526D99E7F00BD5CC8 /* ProvenanceWalletConnectTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF83EC2D26D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnectTests" */;
+			buildPhases = (
+				CF83EC1226D99E7F00BD5CC8 /* Sources */,
+				CF83EC1326D99E7F00BD5CC8 /* Frameworks */,
+				CF83EC1426D99E7F00BD5CC8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF83EC1826D99E7F00BD5CC8 /* PBXTargetDependency */,
+			);
+			name = ProvenanceWalletConnectTests;
+			productName = ProvenanceWalletConnectTests;
+			productReference = CF83EC1626D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CF83EC2026D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF83EC3026D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnectUITests" */;
+			buildPhases = (
+				CF83EC1D26D99E7F00BD5CC8 /* Sources */,
+				CF83EC1E26D99E7F00BD5CC8 /* Frameworks */,
+				CF83EC1F26D99E7F00BD5CC8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF83EC2326D99E7F00BD5CC8 /* PBXTargetDependency */,
+			);
+			name = ProvenanceWalletConnectUITests;
+			productName = ProvenanceWalletConnectUITests;
+			productReference = CF83EC2126D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CF83EBF526D99E7D00BD5CC8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					CF83EBFC26D99E7D00BD5CC8 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					CF83EC1526D99E7F00BD5CC8 = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = CF83EBFC26D99E7D00BD5CC8;
+					};
+					CF83EC2026D99E7F00BD5CC8 = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = CF83EBFC26D99E7D00BD5CC8;
+					};
+				};
+			};
+			buildConfigurationList = CF83EBF826D99E7D00BD5CC8 /* Build configuration list for PBXProject "ProvenanceWalletConnect" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF83EBF426D99E7D00BD5CC8;
+			productRefGroup = CF83EBFE26D99E7D00BD5CC8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF83EBFC26D99E7D00BD5CC8 /* ProvenanceWalletConnect */,
+				CF83EC1526D99E7F00BD5CC8 /* ProvenanceWalletConnectTests */,
+				CF83EC2026D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CF83EBFB26D99E7D00BD5CC8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF83EC1026D99E7F00BD5CC8 /* LaunchScreen.storyboard in Resources */,
+				CF83EC0D26D99E7F00BD5CC8 /* Assets.xcassets in Resources */,
+				CF83EC0826D99E7D00BD5CC8 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1426D99E7F00BD5CC8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1F26D99E7F00BD5CC8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CF83EBF926D99E7D00BD5CC8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF83EC0B26D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodeld in Sources */,
+				CF83EC0526D99E7D00BD5CC8 /* ViewController.swift in Sources */,
+				CF83EC0126D99E7D00BD5CC8 /* AppDelegate.swift in Sources */,
+				CF83EC0326D99E7D00BD5CC8 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1226D99E7F00BD5CC8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF83EC1B26D99E7F00BD5CC8 /* ProvenanceWalletConnectTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF83EC1D26D99E7F00BD5CC8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF83EC2626D99E7F00BD5CC8 /* ProvenanceWalletConnectUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CF83EC1826D99E7F00BD5CC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF83EBFC26D99E7D00BD5CC8 /* ProvenanceWalletConnect */;
+			targetProxy = CF83EC1726D99E7F00BD5CC8 /* PBXContainerItemProxy */;
+		};
+		CF83EC2326D99E7F00BD5CC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF83EBFC26D99E7D00BD5CC8 /* ProvenanceWalletConnect */;
+			targetProxy = CF83EC2226D99E7F00BD5CC8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CF83EC0626D99E7D00BD5CC8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CF83EC0726D99E7D00BD5CC8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		CF83EC0E26D99E7F00BD5CC8 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CF83EC0F26D99E7F00BD5CC8 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CF83EC2826D99E7F00BD5CC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CF83EC2926D99E7F00BD5CC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CF83EC2B26D99E7F00BD5CC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnect/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CF83EC2C26D99E7F00BD5CC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnect/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CF83EC2E26D99E7F00BD5CC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnectTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProvenanceWalletConnect.app/ProvenanceWalletConnect";
+			};
+			name = Debug;
+		};
+		CF83EC2F26D99E7F00BD5CC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnectTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProvenanceWalletConnect.app/ProvenanceWalletConnect";
+			};
+			name = Release;
+		};
+		CF83EC3126D99E7F00BD5CC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnectUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnectUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ProvenanceWalletConnect;
+			};
+			name = Debug;
+		};
+		CF83EC3226D99E7F00BD5CC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NGCP4B65KR;
+				INFOPLIST_FILE = ProvenanceWalletConnectUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.cucreek.ProvenanceWalletConnectUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ProvenanceWalletConnect;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CF83EBF826D99E7D00BD5CC8 /* Build configuration list for PBXProject "ProvenanceWalletConnect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF83EC2826D99E7F00BD5CC8 /* Debug */,
+				CF83EC2926D99E7F00BD5CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF83EC2A26D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF83EC2B26D99E7F00BD5CC8 /* Debug */,
+				CF83EC2C26D99E7F00BD5CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF83EC2D26D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnectTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF83EC2E26D99E7F00BD5CC8 /* Debug */,
+				CF83EC2F26D99E7F00BD5CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF83EC3026D99E7F00BD5CC8 /* Build configuration list for PBXNativeTarget "ProvenanceWalletConnectUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF83EC3126D99E7F00BD5CC8 /* Debug */,
+				CF83EC3226D99E7F00BD5CC8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CF83EC0926D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CF83EC0A26D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodel */,
+			);
+			currentVersion = CF83EC0A26D99E7D00BD5CC8 /* ProvenanceWalletConnect.xcdatamodel */;
+			path = ProvenanceWalletConnect.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = CF83EBF526D99E7D00BD5CC8 /* Project object */;
+}

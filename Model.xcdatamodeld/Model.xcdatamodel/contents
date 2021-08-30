@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Address" representedClassName="Address" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="rootWallet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RootWallet" inverseName="addresses" inverseEntity="RootWallet"/>
+    </entity>
+    <entity name="RootWallet" representedClassName="RootWallet" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="mainnet" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="seedCipher" optional="YES" attributeType="Binary"/>
+        <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Address" inverseName="rootWallet" inverseEntity="Address"/>
+    </entity>
+    <elements>
+        <element name="Address" positionX="-63" positionY="-18" width="128" height="88"/>
+        <element name="RootWallet" positionX="-381.55029296875" positionY="-55.21908569335938" width="128" height="103"/>
+    </elements>
+</model>

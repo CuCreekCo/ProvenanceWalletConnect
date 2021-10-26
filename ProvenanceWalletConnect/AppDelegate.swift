@@ -7,12 +7,20 @@
 
 import UIKit
 import CoreData
-
+import GRPC
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    public var channel: ClientConnection!
+    public var group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        channel = ClientConnection.insecure(group: group)
+                                  .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
+                                  .connect(host: "10.0.1.12", port: 9090)   //TODO plist
+
         return true
     }
 

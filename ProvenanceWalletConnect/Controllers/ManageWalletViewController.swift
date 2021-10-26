@@ -18,7 +18,7 @@ class ManageWalletViewController: UIViewController, UITableViewDelegate, UITable
 		guard container != nil else {
 			fatalError("This view needs a persistent container.")
 		}
-		walletService = WalletService(persistentContainer: container)
+		walletService = WalletService(persistentContainer: container, channel: channel())
 	}
 
 	override func viewWillAppear(_ animated: Bool) {

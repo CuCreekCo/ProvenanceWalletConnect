@@ -4,17 +4,26 @@
 
 import Foundation
 import ProvWallet
-import CoreData
 import GRPC
+import CoreData
 
 class WalletService: NSObject {
 	
 	private var container: NSPersistentContainer!
 
-	init(persistentContainer: NSPersistentContainer) {
+	var auth: AuthQuery!
+	var bank: Bank!
+	var channel: ClientConnection!
+
+	init(persistentContainer: NSPersistentContainer, channel:ClientConnection) {
 		super.init()
 		//TODO ARC leak?
 		container = persistentContainer
+
+		self.channel = channel
+		auth = AuthQuery(channel: channel)
+		bank = Bank(channel: channel)
+
 	}
 
 // MARK: - HD Wallet
@@ -29,8 +38,6 @@ class WalletService: NSObject {
 	}
 
 	func walletAddress(index: Int) throws -> String? {
-		var walletAddress: String? = nil
-		var walletError: ProvenanceWalletError? = nil
 
 		guard let rootWallet = try fetchRootWalletEntity() else {
 			throw ProvenanceWalletError(kind: .rootWalletNotFound, message: "Root Wallet Not Found", messages: nil, underlyingError: nil)
@@ -50,6 +57,7 @@ class WalletService: NSObject {
 
 	private func address(privateKey: PrivateKey, index: Int) throws -> String? {
 		do {
+			
 			let privateKey = try PrivateKey(bip32Serialized: privateKey.serialize(publicKeyOnly: false))
 			// BIP44 key derivation
 			// m/44'
@@ -65,7 +73,7 @@ class WalletService: NSObject {
 			// m/44'/1'/0'/0
 			let change = account.derived(at: .notHardened(0))
 
-			//TODO if mainnet unhardened, if testnet harded :|
+			//TODO if mainnet unhardened, if testnet hardened :|
 			// m/44'/1'/0'/0/0
 			let firstPrivateKey = Utilities.mainnet() ? change.derived(at: .notHardened(UInt32(index))) :
 					change.derived(at: .hardened(UInt32(index)))
@@ -246,57 +254,26 @@ class WalletService: NSObject {
 	}
 
 // MARK: - Blockchain
-	func queryAuth(address: String) -> String {
+	func queryAuth(address: String) -> Cosmos_Auth_V1beta1_BaseAccount {
 
-		let group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
-		defer {
-			try? group.syncShutdownGracefully()
-		}
-		let channel = ClientConnection.insecure(group: group)
-		                              .connect(host: "10.0.1.12", port: 9090)
-
-		let client = Cosmos_Auth_V1beta1_QueryClient(channel: channel)
-		var request = Cosmos_Auth_V1beta1_QueryAccountRequest()
-		request.address = address
 		do {
-
-			let account = try client.account(request).response.wait().account
-
-			let baseAccount = try Cosmos_Auth_V1beta1_BaseAccount(serializedData: account.serializedData())
-			Utilities.log("\(baseAccount.accountNumber)")
-			return baseAccount.textFormatString()
+			return try auth.baseAccount(address: address).wait()
 		} catch {
 			Utilities.log(error)
+			return Cosmos_Auth_V1beta1_BaseAccount.init()
 		}
-		return "nil"
-
 	}
 
 	func queryBank() throws -> Cosmos_Base_V1beta1_Coin {
 		guard let address = try fetchAddresses().first?.address else {
 			throw ProvenanceWalletError(kind: .walletAddressError, message: "Wallet Address not Found", messages: nil, underlyingError: nil)
 		}
-		
-		let group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
-		defer {
-			try? group.syncShutdownGracefully()
-		}
-		let channel = ClientConnection.insecure(group: group)
-		                              .connect(host: "10.0.1.12", port: 9090)
 
-		let client = Cosmos_Bank_V1beta1_QueryClient(channel: channel)
-		var request = Cosmos_Bank_V1beta1_QueryBalanceRequest()
-		request.address = address
-		request.denom = "nhash"
 		do {
-
-			let balance = try client.balance(request).response.wait().balance
-
-			Utilities.log("\(balance.textFormatString())")
-			return balance
+			return try bank.balance(address: address, denom: "nhash").wait()
 		} catch {
 			Utilities.log(error)
+			return Cosmos_Base_V1beta1_Coin.init()
 		}
-		return Cosmos_Base_V1beta1_Coin()
 	}
 }

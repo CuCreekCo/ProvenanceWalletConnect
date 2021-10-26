@@ -24,10 +24,10 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		super.viewDidLoad()
 		if let rootVC =  parent as? RootViewController {
 			container = rootVC.container
-			walletService = WalletService(persistentContainer: container)
+			walletService = WalletService(persistentContainer: container, channel: channel())
 		}
 		container = persistentContainer()
-		walletService = WalletService(persistentContainer: container)
+		walletService = WalletService(persistentContainer: container, channel: channel())
 		
 		configureServer()
 	}
@@ -36,7 +36,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		super.viewWillAppear(animated)
 
 		do {
-			if let walletRoot = try walletService.fetchRootWalletEntity() {
+			if (try walletService.fetchRootWalletEntity()) != nil {
 				self.connectedWalletView.isHidden = false
 				self.connectedWalletAddress.text = walletService.defaultAddress()
 				
@@ -48,6 +48,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 				}
 				
 			} else {
+				self.connectWalletView.isHidden = false
 				self.connectedWalletView.isHidden = true
 			}
 			

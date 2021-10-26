@@ -5,6 +5,7 @@
 import Foundation
 import UIKit
 import CoreData
+import GRPC
 
 extension UIViewController {
 	func onMainThread(_ closure: @escaping () -> Void) {
@@ -24,5 +25,13 @@ extension UIViewController {
 		} else {
 			fatalError("This view needs a persistent container.")
 		}
+	}
+
+	private func appDelegate() -> AppDelegate {
+		UIApplication.shared.delegate as! AppDelegate
+	}
+
+	func channel() -> ClientConnection {
+		appDelegate().channel
 	}
 }

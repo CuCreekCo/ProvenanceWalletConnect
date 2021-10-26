@@ -27,6 +27,9 @@ class BaseHandler: RequestHandler {
 	}
 
 	func askToSign(request: Request, message: String, sign: @escaping () -> String) {
+		Utilities.log("askToSign")
+		Utilities.log(request)
+		Utilities.log(message)
 		let onSign = {
 			let signature = sign()
 			self.sever.send(.signature(signature, for: request))
@@ -50,6 +53,9 @@ class PersonalSignHandler: BaseHandler {
 	}
 
 	override func handle(request: Request) {
+		Utilities.log("askToSign")
+		Utilities.log(request)
+
 		do {
 			let messageBytes = try request.parameter(of: String.self, at: 1)
 			let address = try request.parameter(of: String.self, at: 0)
@@ -73,6 +79,9 @@ class PersonalSignHandler: BaseHandler {
 	}
 
 	private func personalMessageData(messageData: Data) -> Data {
+		Utilities.log("personalMessageData")
+		Utilities.log(messageData)
+
 		let prefix = "\u{19}Ethereum Signed Message:\n"
 		let prefixData = (prefix + String(messageData.count)).data(using: .ascii)!
 		return prefixData + messageData

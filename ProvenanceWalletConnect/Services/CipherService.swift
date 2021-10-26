@@ -78,7 +78,9 @@ class CipherService: NSObject {
 
 		var error: Unmanaged<CFError>?
 		guard let privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error) else {
-			throw error!.takeRetainedValue() as Error
+			let error = error!.takeRetainedValue() as Error
+			Utilities.log(error)
+			throw error
 		}
 		guard let pubKey: SecKey = SecKeyCopyPublicKey(privateKey) else {
 			throw ProvenanceWalletError(kind: .publicKeyError, message: "Could not create public key", messages: nil,

@@ -19,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         channel = ClientConnection.insecure(group: group)
                                   .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
-                                  .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"), port: 9090)
+                                  .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
+                                           port: Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090)
 
         return true
     }

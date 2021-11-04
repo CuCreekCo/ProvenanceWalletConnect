@@ -31,7 +31,20 @@
 	<key>ProvenanceAPIEndpoint</key>
 	<string>http://rpc-0.test.provenance.io:26657</string>
 	<key>ProvenanceGRPCEndpoint</key>
-	<string>10.0.1.12</string>
+	<string>node.test.dlob.io</string>
+	<key>ProvenanceGRPCPort</key>
+	<string>9090</string>
+	<key>APFiles</key>
+	<dict>
+		<key>APFileDescriptionKey</key>
+		<string></string>
+		<key>APFileDestinationPath</key>
+		<string></string>
+		<key>APFileName</key>
+		<string></string>
+		<key>APFileSourcePath</key>
+		<string></string>
+	</dict>
 	<key>ProvenanceMainnet</key>
 	<false/>
 	<key>ProvenanceRPCEndpoint</key>

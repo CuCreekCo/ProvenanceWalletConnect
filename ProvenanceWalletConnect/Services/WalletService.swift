@@ -5,6 +5,8 @@
 import Foundation
 import ProvWallet
 import GRPC
+import NIO
+import SwiftProtobuf
 import CoreData
 
 class WalletService: NSObject {
@@ -37,18 +39,33 @@ class WalletService: NSObject {
 		completion(privateKey, nil)
 	}
 
-	func walletAddress(index: Int) throws -> String? {
-
+	func defaultPrivateKey(index: UInt32 = 0) throws -> PrivateKey {
 		guard let rootWallet = try fetchRootWalletEntity() else {
 			throw ProvenanceWalletError(kind: .rootWalletNotFound, message: "Root Wallet Not Found", messages: nil, underlyingError: nil)
 		}
-		let key = try decryptWalletKey(rootWallet: rootWallet)
-		guard let walletAddress = try address(privateKey: key, index: index) else {
-			throw ProvenanceWalletError(kind: .walletAddressError,
-			                            message: "Invalid Wallet Index \(index)", messages: nil,
-			                            underlyingError: nil)
-		}
-		return walletAddress
+		let root = try decryptWalletKey(rootWallet: rootWallet)
+		return accountPathKey(rootKey: root, atIndex: index)
+	}
+
+	func accountPathKey(rootKey: PrivateKey, atIndex:UInt32) -> PrivateKey {
+		// BIP44 key derivation
+		// m/44'
+		let purpose = rootKey.derived(at: .hardened(44))
+
+		// m/44'/1' or m/44/505'
+		let coinType = Utilities.mainnet() ? purpose.derived(at: .hardened(505))
+				: purpose.derived(at: .hardened(1))
+
+		// m/44'/1'/0'
+		let account = coinType.derived(at: .hardened(0))
+
+		// m/44'/1'/0'/0
+		let change = account.derived(at: .notHardened(0))
+
+		//TODO if mainnet unhardened, if testnet hardened :|
+		// m/44'/1'/0'/0/0
+		return Utilities.mainnet() ? change.derived(at: .notHardened(atIndex)) :
+				change.derived(at: .hardened(atIndex))
 	}
 
 	private func addresses(privateKey: PrivateKey, startIndex: Int, endIndex: Int) throws -> [String?] {
@@ -57,26 +74,9 @@ class WalletService: NSObject {
 
 	private func address(privateKey: PrivateKey, index: Int) throws -> String? {
 		do {
-			
-			let privateKey = try PrivateKey(bip32Serialized: privateKey.serialize(publicKeyOnly: false))
-			// BIP44 key derivation
-			// m/44'
-			let purpose = privateKey.derived(at: .hardened(44))
-
-			// m/44'/1' or m/44/505'
-			let coinType = Utilities.mainnet() ? purpose.derived(at: .hardened(505))
-					: purpose.derived(at: .hardened(1))
-
-			// m/44'/1'/0'
-			let account = coinType.derived(at: .hardened(0))
-
-			// m/44'/1'/0'/0
-			let change = account.derived(at: .notHardened(0))
-
 			//TODO if mainnet unhardened, if testnet hardened :|
 			// m/44'/1'/0'/0/0
-			let firstPrivateKey = Utilities.mainnet() ? change.derived(at: .notHardened(UInt32(index))) :
-					change.derived(at: .hardened(UInt32(index)))
+			let firstPrivateKey = accountPathKey(rootKey: privateKey, atIndex: UInt32(index))
 
 			NSLog("\(firstPrivateKey.publicKey.address)")
 			return firstPrivateKey.publicKey.address
@@ -88,6 +88,12 @@ class WalletService: NSObject {
 		}
 	}
 
+// MARK: - Signature
+	func sign(messageData: Data) throws -> Data {
+		let privateKey = try defaultPrivateKey()
+		return try privateKey.sign(data: messageData).provenanceSignature
+	}
+	
 // MARK: - Wallet Cipher
 	private func decryptWalletKey(rootWallet: RootWallet) throws -> PrivateKey {
 		guard let uuid = rootWallet.id else {
@@ -276,4 +282,31 @@ class WalletService: NSObject {
 			return Cosmos_Base_V1beta1_Coin.init()
 		}
 	}
+
+	func estimateTx(signingKey: PrivateKey, message: Message) throws -> Cosmos_Base_Abci_V1beta1_GasInfo {
+
+		// Query the blockchain account in a blocking wait
+		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
+
+		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
+
+		let txMsg = try Google_Protobuf_Any.from(message: message)
+
+		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: [txMsg])
+
+		return try estPromise.wait()
+	}
+
+	func broadcastTx(signingKey: PrivateKey, message: Message, gasEstimate: Cosmos_Base_Abci_V1beta1_GasInfo) throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
+		// Query the blockchain account in a blocking wait
+		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
+
+		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
+
+		let txMsg = try Google_Protobuf_Any.from(message: message)
+
+		let txPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_TxResponse> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: [txMsg])
+		return try txPromise.wait()
+	}
+
 }

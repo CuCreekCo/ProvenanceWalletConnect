@@ -4,16 +4,18 @@
 
 import Foundation
 import UIKit
+import ProvWallet
+import SwiftProtobuf
 import WalletConnectSwift
 
 class BaseHandler: RequestHandler {
 	weak var controller: UIViewController!
-	weak var sever: Server!
+	weak var server: Server!
 	weak var walletService: WalletService!
 
 	init(for controller: UIViewController, server: Server, walletService: WalletService) {
 		self.controller = controller
-		sever = server
+		self.server = server
 		self.walletService = walletService
 	}
 
@@ -26,16 +28,18 @@ class BaseHandler: RequestHandler {
 		Utilities.log(request)
 	}
 
-	func askToSign(request: Request, message: String, sign: @escaping () -> String) {
-		Utilities.log("askToSign")
-		Utilities.log(request)
-		Utilities.log(message)
+	func askToSign(request: Request, message: String, sign: @escaping () throws -> String) {
 		let onSign = {
-			let signature = sign()
-			self.sever.send(.signature(signature, for: request))
+			do {
+				let signature = try sign()
+				self.server.send(.signature(signature, for: request))
+			} catch {
+				Utilities.log(error)
+				self.server.send(.reject(request))
+			}
 		}
 		let onCancel = {
-			self.sever.send(.reject(request))
+			self.server.send(.reject(request))
 		}
 		DispatchQueue.main.async {
 			UIAlertController.showShouldSign(from: self.controller,
@@ -45,78 +49,137 @@ class BaseHandler: RequestHandler {
 			                                 onCancel: onCancel)
 		}
 	}
+
+	func askToSend(request: Request, message: Message, displayMessage: String, gasFee: UInt64, send: @escaping () throws -> Cosmos_Base_Abci_V1beta1_TxResponse) {
+		let onSend = {
+			do {
+				
+				let txResponse = try send()
+				if (txResponse.code == 0) {
+					Utilities.log(txResponse.rawLog)
+					self.server.send(.transaction(txResponse.txhash, for: request))
+					DispatchQueue.main.async {
+						Utilities.showAlert(title: "Success", message: "\(txResponse.rawLog)", completionHandler: nil)
+					}
+
+				} else {
+					Utilities.log(txResponse.rawLog)
+					self.server.send(.reject(request))
+					DispatchQueue.main.async {
+						Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)", completionHandler: nil)
+					}
+
+				}
+			} catch {
+				Utilities.log(error)
+				self.server.send(.reject(request))
+				DispatchQueue.main.async {
+					Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
+				}
+			}
+		}
+		let onCancel = {
+			self.server.send(.reject(request))
+		}
+		DispatchQueue.main.async {
+			UIAlertController.showShouldSend(from: self.controller,
+			                                 title: "Send Message",
+			                                 message: "\(displayMessage) will cost \(gasFee)\(Tx.baseDenom)",
+			                                 onSend: onSend,
+			                                 onCancel: onCancel)
+		}
+	}
+
 }
 
 class PersonalSignHandler: BaseHandler {
 	override func canHandle(request: Request) -> Bool {
-		request.method == "eth_sign"
+		request.method == "provenance_sign"
 	}
 
 	override func handle(request: Request) {
-		Utilities.log("askToSign")
-		Utilities.log(request)
-
 		do {
 			let messageBytes = try request.parameter(of: String.self, at: 1)
 			let address = try request.parameter(of: String.self, at: 0)
 
 			guard address == walletService.defaultAddress() else {
-				sever.send(.reject(request))
+				server.send(.reject(request))
 				return
 			}
 
 			let decodedMessage = String(data: Data(hex: messageBytes), encoding: .utf8) ?? messageBytes
 
 			askToSign(request: request, message: decodedMessage) {
-				let personalMessageData = self.personalMessageData(messageData: Data(hex: messageBytes))
-				let (v, r, s) = (0, Data(), Data()) //try! self.privateKey.sign(message: .init(hex: personalMessageData.toHexString()))
-				return "0x" + r.toHexString() + s.toHexString() + String(v + 27, radix: 16) // v in [0, 1]
+				let messageData = Data(hex: messageBytes).sha256()
+				return try self.walletService.sign(messageData: messageData).toHexString()
 			}
 		} catch {
-			sever.send(.invalid(request))
+			server.send(.invalid(request))
+			DispatchQueue.main.async {
+				Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
+			}
+
 			return
 		}
 	}
-
-	private func personalMessageData(messageData: Data) -> Data {
-		Utilities.log("personalMessageData")
-		Utilities.log(messageData)
-
-		let prefix = "\u{19}Ethereum Signed Message:\n"
-		let prefixData = (prefix + String(messageData.count)).data(using: .ascii)!
-		return prefixData + messageData
-	}
 }
 
-class SignTransactionHandler: BaseHandler {
+class SendTransactionHandler: BaseHandler {
 	override func canHandle(request: Request) -> Bool {
-		request.method == "eth_signTransaction"
+		request.method == "provenance_sendTransaction"
 	}
 
 	override func handle(request: Request) {
 		do {
 			Utilities.log(request)
-			//TODO change to Cosmos type
-			/*
-			let transaction = try request.parameter(of: EthereumTransaction.self, at: 0)
-			guard transaction.from == walletService.defaultAddress() else {
-				sever.send(.reject(request))
-				return
-			}
+			let address = try request.parameter(of: String.self, at: 0)
+			let (type, message) = try decodeMessage(request: request)
 
+			let signingKey = try walletService.defaultPrivateKey()
+			//TODO assert signing key == address in request
+			
+			let gasEstimate = try walletService.estimateTx(signingKey: signingKey, message: message)
+			let displayMessage = try message.jsonString()
+			var gas = (Double(gasEstimate.gasUsed) * 1.3)
+			gas.round(.up)
 
-			 */
-			askToSign(request: request, message: request.jsonString) {
-				/*
-				let signedTx = try! transaction.sign(with: self.privateKey, chainId: 4)
-				let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
-				return r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
+			let gasFee = UInt64(gas) * Tx.gasPrice
 
-				 */
-				return "Yo dawg"
+			askToSend(request: request, message: message, displayMessage: displayMessage, gasFee: gasFee) {
+				try self.walletService.broadcastTx(signingKey: signingKey, message: message, gasEstimate: gasEstimate)
 			}
 		} catch {
-			sever.send(.invalid(request))
+			Utilities.log(error)
+			server.send(.invalid(request))
+			DispatchQueue.main.async {
+				Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
+			}
+
 		}
+	}
+
+	private func decodeMessage(request: Request) throws -> (String, Message) {
+		let msgHex = try request.parameter(of: String.self, at: 1)
+		let msgData = Data(hex: msgHex)
+		guard let msgB64 = Data(base64Encoded: msgData) else {
+			throw ProvenanceWalletError(kind: .invalidProvenanceMessage,
+			                            message: "request contains invalid message information", messages: nil,
+			                            underlyingError: nil)
+		}
+		let msgAny = try Google_Protobuf_Any(serializedData: msgB64)
+
+		Utilities.log(msgAny.typeURL)
+
+		switch msgAny.typeURL {
+			case "/cosmos.bank.v1beta1.MsgSend":
+				return (msgAny.typeURL, try Cosmos_Bank_V1beta1_MsgSend(unpackingAny: msgAny))
+			default:
+				throw ProvenanceWalletError(kind: .unsupportedProvenanceMessage,
+				                            message: "wallet does not support \(msgAny.typeURL)",
+				                            messages: nil,
+				                            underlyingError: nil)
+		}
+
+
 	}
 }

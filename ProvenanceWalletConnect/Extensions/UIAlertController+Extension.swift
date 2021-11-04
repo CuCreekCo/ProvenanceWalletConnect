@@ -34,5 +34,13 @@ extension UIAlertController {
 		alert.addAction(startAction)
 		controller.present(alert.withCloseButton(title: "Reject", onClose: onCancel), animated: true)
 	}
+
+	static func showShouldSend(from controller: UIViewController, title: String, message: String, onSend: @escaping () -> Void, onCancel: @escaping () -> Void) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let startAction = UIAlertAction(title: "Broadcast", style: .default) { _ in onSend() }
+		alert.addAction(startAction)
+		controller.present(alert.withCloseButton(title: "Reject", onClose: onCancel), animated: true)
+	}
+
 }
 

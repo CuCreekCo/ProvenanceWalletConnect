@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ProvWallet
 import WalletConnectSwift
 
 class WalletViewController: UIViewController, ScannerViewControllerDelegate, ServerDelegate {
@@ -98,7 +99,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 	private func configureServer() {
 		server = Server(delegate: self)
 		server.register(handler: PersonalSignHandler(for: self, server: server, walletService: walletService))
-		server.register(handler: SignTransactionHandler(for: self, server: server, walletService: walletService))
+		server.register(handler: SendTransactionHandler(for: self, server: server, walletService: walletService))
 		if let oldSessionObject = UserDefaults.standard.object(forKey: sessionKey) as? Data,
 		   let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
 			try? server.reconnect(to: session)
@@ -111,12 +112,22 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 	}
 
 	func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
+		var publicKey: String = ""
+		do {
+			publicKey = try walletService.defaultPrivateKey().serialize()
+		} catch {
+			Utilities.log(error)
+		}
+
 		let walletMeta = Session.ClientMeta(name: "Provenance Wallet",
 		                                    description: nil,
 		                                    icons: [],
 		                                    url: URL(string: "https://provenance.io")!)
 		let walletInfo = Session.WalletInfo(approved: true,
-		                                    accounts: [walletService.defaultAddress()],
+		                                    accounts: [
+			                                    walletService.defaultAddress(),
+			                                    publicKey
+		                                    ],
 		                                    chainId: 4,
 		                                    peerId: UUID().uuidString,
 		                                    peerMeta: walletMeta)

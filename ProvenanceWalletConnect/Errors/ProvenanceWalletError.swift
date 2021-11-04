@@ -14,6 +14,8 @@ struct ProvenanceWalletError: Error {
 		case invalidDataLength
 		case rootWalletNotFound
 		case walletAddressError
+		case invalidProvenanceMessage
+		case unsupportedProvenanceMessage
 	}
 	let kind: ErrorKind
 	let message: String

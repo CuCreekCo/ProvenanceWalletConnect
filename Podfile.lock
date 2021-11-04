@@ -22,7 +22,7 @@ PODS:
   - gRPC-Swift-Plugins (1.4.2):
     - gRPC-Swift (= 1.4.2)
   - Logging (1.4.0)
-  - ProvWallet (0.0.5):
+  - ProvWallet (0.0.6):
     - CryptoSwift (~> 1.4.0)
     - gRPC-Swift (~> 1.4.0)
     - gRPC-Swift-Plugins (~> 1.4.0)
@@ -93,7 +93,7 @@ PODS:
     - Starscream (~> 3.1)
 
 DEPENDENCIES:
-  - ProvWallet (~> 0.0.5)
+  - ProvWallet (~> 0.0.6)
   - SwiftyJSON (~> 4.0)
   - WalletConnectSwift
 
@@ -146,7 +146,7 @@ SPEC CHECKSUMS:
   gRPC-Swift: 3e11bcfbb92f345b7ee8e1fb9ee4b6ae408c3774
   gRPC-Swift-Plugins: 6c2a4d17afd229a4c4d1b5fcff46869dd250492d
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  ProvWallet: 7f5158ecd6250dce0d25e00505c320fb75c1c758
+  ProvWallet: 8d1ea1688a0235a719c0d402644dc26d18c7e139
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftNIO: bb336ceef32850e9671d3fa0e0cc2b9add3b5948
@@ -166,6 +166,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   WalletConnectSwift: 1fbff8f5315bd8d41596773ca1b384aa873b6824
 
-PODFILE CHECKSUM: 8997f3117dd6e436106a2ed5d709a1310019dc8a
+PODFILE CHECKSUM: 12cd49ca66a2479f08498de26f66d909970e7e86
 
 COCOAPODS: 1.11.2

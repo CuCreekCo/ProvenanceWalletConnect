@@ -2,16 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>ProvenanceGRPCEndpoint</key>
-	<string>http://localhost:9090</string>
-	<key>ProvenanceRPCEndpoint</key>
-	<string>http://localhost:1317</string>
-	<key>ProvenanceAPIEndpoint</key>
-	<string>http://localhost:26657</string>
-	<key>ProvenanceMainnet</key>
-	<false/>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Encrypt Wallet</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -29,13 +19,23 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan WalletConnect QR</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Encrypt Wallet</string>
+	<key>ProvenanceAPIEndpoint</key>
+	<string>http://rpc-0.test.provenance.io:26657</string>
+	<key>ProvenanceGRPCEndpoint</key>
+	<string>10.0.1.12</string>
+	<key>ProvenanceMainnet</key>
+	<false/>
+	<key>ProvenanceRPCEndpoint</key>
+	<string>https://api.test.provenance.io</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

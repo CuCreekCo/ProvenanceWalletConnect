@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         channel = ClientConnection.insecure(group: group)
                                   .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
-                                  .connect(host: "10.0.1.12", port: 9090)   //TODO plist
+                                  .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"), port: 9090)
 
         return true
     }
@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentCloudKitContainer(name: "Model")
+        let container = NSPersistentCloudKitContainer(name: "ProvenanceWalletConnect")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.

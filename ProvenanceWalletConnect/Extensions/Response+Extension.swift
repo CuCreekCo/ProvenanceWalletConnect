@@ -9,4 +9,8 @@ extension Response {
 	static func signature(_ signature: String, for request: Request) -> Response {
 		try! Response(url: request.url, value: signature, id: request.id!)
 	}
+	static func transaction(_ txId: String, for request: Request) -> Response {
+		try! Response(url: request.url, value: txId, id: request.id!)
+	}
+
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rq8-7k-2xv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rq8-7k-2xv">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -23,25 +24,29 @@
                                         <rect key="frame" x="8" y="33" width="80" height="80"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B2c-Px-Itp">
-                                        <rect key="frame" x="96" y="56" width="262" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="loe-Ep-TDK">
-                                        <rect key="frame" x="100" y="98" width="124" height="30"/>
+                                        <rect key="frame" x="96" y="58" width="124" height="30"/>
                                         <state key="normal" title="Disconnect Wallet"/>
                                         <connections>
                                             <action selector="disconnectWallet:" destination="NrI-O4-aTl" eventType="touchUpInside" id="Hxd-L3-YFL"/>
                                         </connections>
                                     </button>
+                                    <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B2c-Px-Itp">
+                                        <rect key="frame" x="8" y="118" width="342" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <action selector="didTouchUpAddress:" destination="NrI-O4-aTl" eventType="touchUpInside" id="luZ-fc-NTD"/>
+                                        </connections>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
                                 <constraints>
-                                    <constraint firstItem="loe-Ep-TDK" firstAttribute="leading" secondItem="W6X-Us-0gw" secondAttribute="trailing" constant="12" id="0py-Js-U2V"/>
-                                    <constraint firstItem="loe-Ep-TDK" firstAttribute="top" secondItem="7Mt-HX-oLz" secondAttribute="top" constant="98" id="l5W-ea-ur6"/>
-                                    <constraint firstAttribute="trailing" secondItem="loe-Ep-TDK" secondAttribute="trailing" constant="134" id="qHm-NC-7qc"/>
+                                    <constraint firstItem="loe-Ep-TDK" firstAttribute="leading" secondItem="W6X-Us-0gw" secondAttribute="trailing" constant="8" id="2bK-QD-GHq"/>
+                                    <constraint firstItem="B2c-Px-Itp" firstAttribute="top" secondItem="W6X-Us-0gw" secondAttribute="bottom" constant="5" id="5Kb-Wu-RYQ"/>
+                                    <constraint firstItem="loe-Ep-TDK" firstAttribute="centerY" secondItem="W6X-Us-0gw" secondAttribute="centerY" id="f1M-gb-zQg"/>
+                                    <constraint firstItem="B2c-Px-Itp" firstAttribute="trailing" secondItem="7Mt-HX-oLz" secondAttribute="trailingMargin" id="ifu-V9-H2g"/>
+                                    <constraint firstItem="B2c-Px-Itp" firstAttribute="leading" secondItem="W6X-Us-0gw" secondAttribute="leading" id="qgK-gA-Vmq"/>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ANV-XV-WWZ">
@@ -132,6 +137,7 @@
                             <constraint firstItem="Fpt-Zv-TDE" firstAttribute="top" secondItem="gtP-GD-BV7" secondAttribute="bottom" constant="26" id="TDD-wO-UHs"/>
                             <constraint firstItem="Fpt-Zv-TDE" firstAttribute="top" secondItem="wI8-Le-d4F" secondAttribute="top" constant="643" id="bfQ-bU-vLz"/>
                             <constraint firstItem="gtP-GD-BV7" firstAttribute="top" secondItem="ANV-XV-WWZ" secondAttribute="bottom" constant="27" id="dBd-z3-rSm"/>
+                            <constraint firstItem="7Mt-HX-oLz" firstAttribute="trailing" secondItem="ANV-XV-WWZ" secondAttribute="trailing" id="dcs-On-FLN"/>
                             <constraint firstItem="ANV-XV-WWZ" firstAttribute="trailing" secondItem="gtP-GD-BV7" secondAttribute="trailing" id="fWF-iw-zoR"/>
                             <constraint firstAttribute="bottom" secondItem="ANV-XV-WWZ" secondAttribute="bottom" constant="406" id="gI6-Vj-vnR"/>
                             <constraint firstItem="ANV-XV-WWZ" firstAttribute="top" secondItem="7Mt-HX-oLz" secondAttribute="bottom" constant="24" id="ofL-zt-yYf"/>
@@ -142,7 +148,7 @@
                     <navigationItem key="navigationItem" title="Wallet" id="XJg-Q0-hMu"/>
                     <connections>
                         <outlet property="connectWalletView" destination="ANV-XV-WWZ" id="9ZJ-Me-vbs"/>
-                        <outlet property="connectedWalletAddress" destination="B2c-Px-Itp" id="ZIv-3k-wie"/>
+                        <outlet property="connectedWalletAddress" destination="B2c-Px-Itp" id="yco-Yh-K3d"/>
                         <outlet property="connectedWalletView" destination="7Mt-HX-oLz" id="oAm-oh-VvC"/>
                         <outlet property="disconnectWalletConnectView" destination="Fpt-Zv-TDE" id="aZf-Mr-9cn"/>
                         <outlet property="scanWalletConnectView" destination="gtP-GD-BV7" id="W2h-Xq-Jb5"/>
@@ -221,7 +227,7 @@
                                                 </connections>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="1iO-7O-Wjr"/>
-                                            <barButtonItem tag="77" enabled="NO" title="Import" image="square.and.arrow.up" catalog="system" id="xmU-BA-hEc">
+                                            <barButtonItem tag="77" title="Import" image="square.and.arrow.up" catalog="system" id="xmU-BA-hEc">
                                                 <connections>
                                                     <action selector="importMnemonic:" destination="i39-DW-KD3" id="csF-Tx-nhk"/>
                                                 </connections>
@@ -233,7 +239,7 @@
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AddressTableCell" textLabel="dJ6-ON-PUm" detailTextLabel="Jj6-h8-LFd" style="IBUITableViewCellStyleValue1" id="yqX-0a-3oc">
-                                                <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="43.666667938232422"/>
+                                                <rect key="frame" x="0.0" y="44.666666030883789" width="390" height="43.666667938232422"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yqX-0a-3oc" id="eFa-Ua-uv0">
                                                     <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
@@ -320,7 +326,7 @@
     <resources>
         <image name="arrow.clockwise" catalog="system" width="115" height="128"/>
         <image name="provenance.png" width="256" height="256"/>
-        <image name="shuffle" catalog="system" width="128" height="93"/>
+        <image name="shuffle" catalog="system" width="128" height="95"/>
         <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <image name="trash" catalog="system" width="121" height="128"/>
         <image name="walletconnect.png" width="256" height="256"/>

@@ -12,8 +12,6 @@ import ProvWallet
 import WalletConnectSwift
 
 class WalletViewController: UIViewController, ScannerViewControllerDelegate, ServerDelegate {
-	var container: NSPersistentContainer!
-	var walletService: WalletService!
 	var server: Server!
 	var session: Session!
 	//TODO what is this really?
@@ -23,13 +21,6 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		if let rootVC =  parent as? RootViewController {
-			container = rootVC.container
-			walletService = WalletService(persistentContainer: container, channel: channel())
-		}
-		container = persistentContainer()
-		walletService = WalletService(persistentContainer: container, channel: channel())
-		
 		configureServer()
 	}
 
@@ -37,9 +28,9 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		super.viewWillAppear(animated)
 
 		do {
-			if (try walletService.fetchRootWalletEntity()) != nil {
+			if (try walletService().fetchRootWalletEntity()) != nil {
 				self.connectedWalletView.isHidden = false
-				self.connectedWalletAddress.text = walletService.defaultAddress()
+				self.connectedWalletAddress.text = walletService().defaultAddress()
 				
 				if(server.openSessions().count > 0) {
 					self.disconnectWalletConnectView.isHidden = false
@@ -73,14 +64,16 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
     // MARK: - IBActions
     
     @IBAction func disconnectWallet(_ sender: Any) {
-	    let disconnected = walletService.disconnectWallet()
+	    let disconnected = walletService().disconnectWallet()
 	    if(disconnected) {
 		    self.connectWalletView.isHidden = false
 		    self.connectedWalletView.isHidden = true
 		    do {
-			    try server.disconnect(from: session)
-			    self.scanWalletConnectView.isHidden = false
-			    self.disconnectWalletConnectView.isHidden = true
+			    if(session != nil) {
+				    try server.disconnect(from: session)
+			    }
+			    scanWalletConnectView.isHidden = false
+			    disconnectWalletConnectView.isHidden = true
 		    } catch {
 			    Utilities.log(error)
 		    }
@@ -93,13 +86,20 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		    Utilities.log(error)
 	    }
     }
-    
+
+	@IBAction func didTouchUpAddress(_ sender: Any) {
+		let address = connectedWalletAddress.text
+		UIPasteboard.general.string = address
+		Utilities.showAlert(title: "Address Copied", message: "\(address) Copied to clipboard",
+		                    completionHandler: nil)
+
+	}
 // MARK: - WalletConnect
 
 	private func configureServer() {
 		server = Server(delegate: self)
-		server.register(handler: PersonalSignHandler(for: self, server: server, walletService: walletService))
-		server.register(handler: SendTransactionHandler(for: self, server: server, walletService: walletService))
+		server.register(handler: PersonalSignHandler(for: self, server: server, walletService: walletService()))
+		server.register(handler: SendTransactionHandler(for: self, server: server, walletService: walletService()))
 		if let oldSessionObject = UserDefaults.standard.object(forKey: sessionKey) as? Data,
 		   let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject) {
 			try? server.reconnect(to: session)
@@ -114,7 +114,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 	func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
 		var publicKey: String = ""
 		do {
-			publicKey = try walletService.defaultPrivateKey().serialize()
+			publicKey = try walletService().defaultPrivateKey().serialize()
 		} catch {
 			Utilities.log(error)
 		}
@@ -125,7 +125,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		                                    url: URL(string: "https://provenance.io")!)
 		let walletInfo = Session.WalletInfo(approved: true,
 		                                    accounts: [
-			                                    walletService.defaultAddress(),
+			                                    walletService().defaultAddress() ?? "UNKNOWN",
 			                                    publicKey
 		                                    ],
 		                                    chainId: 4,
@@ -169,9 +169,6 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 // MARK: - Navigation
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if let nextVC: ManageWalletViewController = segue.destination as? ManageWalletViewController {
-			nextVC.container = container
-		}
 		if let nextVC: QRCaptureViewController = segue.destination as? QRCaptureViewController {
 			nextVC.delegate = self
 		}

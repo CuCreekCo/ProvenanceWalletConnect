@@ -9,43 +9,39 @@ import ProvWallet
 import CoreData
 
 class ManageWalletViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-	var container: NSPersistentContainer!
-	var walletService: WalletService!
 
 // MARK: - UI
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		guard container != nil else {
-			fatalError("This view needs a persistent container.")
-		}
-		walletService = WalletService(persistentContainer: container, channel: channel())
-	}
-
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		if (walletService.rootWalletSeedExists()) {
-			let address = walletService.fetchRootWalletSerializedPublicKey()
+		if (walletService().rootWalletSeedExists()) {
+			let address = walletService().fetchRootWalletSerializedPublicKey()
 			mnemonicText.text = address
 			mnemonicText.isEditable = false
+		} else {
+			do {
+				mnemonicText.text = try walletService().randomMnemonic()
+			} catch {
+				Utilities.log(error)
+			}
 		}
 	}
 
 // MARK: - IBOutlet
 
-    @IBOutlet weak var importButton: UIBarButtonItem!
-    
-    @IBOutlet weak var statusIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var importButton: UIBarButtonItem!
+
+	@IBOutlet weak var statusIndicator: UIActivityIndicatorView!
 
 	@IBOutlet weak var mnemonicText: UITextView!
 
-    @IBOutlet weak var addressTable: UITableView!
+	@IBOutlet weak var addressTable: UITableView!
 
 // MARK: - IBAction
-    @IBAction func generateMnemonic(_ sender: UIBarButtonItem) {
+	@IBAction func generateMnemonic(_ sender: UIBarButtonItem) {
 		mnemonicText.text = Mnemonic.create(strength: .hight)
-	    onMainThread { [self] in
-		    importButton.isEnabled = true
-	    }
+		onMainThread { [self] in
+			importButton.isEnabled = true
+		}
 	}
 
 	@IBAction func clearMnemonic(_ sender: UIBarButtonItem) {
@@ -53,35 +49,28 @@ class ManageWalletViewController: UIViewController, UITableViewDelegate, UITable
 	}
 
 	@IBAction func importMnemonic(_ sender: UIBarButtonItem) {
-		self.statusIndicator.startAnimating()
 		onMainThread { [self] in
+			statusIndicator.startAnimating()
 			importButton.isEnabled = false
 		}
 		DispatchQueue.global(qos: .default).async {
 			do {
-				try self.walletService.generatePrivateKey(mnemonic: self.mnemonicText.text) { key, error in
-					do {
-						try Utilities.log(key?.serialize())
-					} catch {
-						ErrorHandler.show(title: "Key Serialization Error", message: error.localizedDescription,
+				let key = try self.walletService().generatePrivateKey(mnemonic: self.mnemonicText.text)
+				do {
+					try Utilities.log(key.serialize())
+				} catch {
+					ErrorHandler.show(title: "Key Serialization Error", message: error.localizedDescription,
+					                  completionHandler: nil)
+				}
+				//TODO encrypt private key with enclave and store in Core Data
+				self.walletService().saveRootWallet(privateKey: key) { (uuid, saveError) in
+					if (saveError != nil) {
+						ErrorHandler.show(title: "Save Root Wallet", message: saveError!.localizedDescription,
 						                  completionHandler: nil)
 					}
-					//TODO encrypt private key with enclave and store in Core Data
-					if (key != nil) {
-						self.walletService.saveRootWallet(privateKey: key!) { (uuid, saveError) in
-							if (saveError != nil) {
-								ErrorHandler.show(title: "Save Root Wallet", message: saveError!.localizedDescription,
-								                  completionHandler: nil)
-							}
-						}
-						DispatchQueue.main.async { [self] in
-							addressTable.reloadData()
-						}
-					}
-					if (error != nil) {
-						ErrorHandler.show(title: "Generate Private Key", message: error!.localizedDescription,
-						                  completionHandler: nil)
-					}
+				}
+				DispatchQueue.main.async { [self] in
+					addressTable.reloadData()
 				}
 			} catch {
 				ErrorHandler.show(title: "Import Mnemonic", message: error.localizedDescription, completionHandler: nil)
@@ -89,42 +78,27 @@ class ManageWalletViewController: UIViewController, UITableViewDelegate, UITable
 			DispatchQueue.main.async { [self] in
 				self.statusIndicator.stopAnimating()
 				Utilities.showAlert(title: "Write it Down!", message: "This is the last time your mnemonic will be displayed.  Be sure to write it down:\n\(mnemonicText.text)") {
-					mnemonicText.text = walletService.fetchRootWalletSerializedPublicKey()
+					mnemonicText.text = walletService().defaultAddress()
 				}
 			}
 		}
 	}
 
-    @IBAction func refreshAddresses(_ sender: Any) {
-	    do {
-		    try walletService.refreshAddresses()
-		    onMainThread { [self] in
-			    addressTable.reloadData()
-		    }
-	    } catch {
-		    Utilities.log(error)
-		    ErrorHandler.show(title: "Refresh Address", message: error.localizedDescription, completionHandler: nil)
-	    }
-			    
-    }
+	@IBAction func refreshAddresses(_ sender: Any) {
+	}
 
 // MARK: - UITable
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		do {
-			return try walletService.fetchAddresses().count
-		} catch {
-			Utilities.log(error)
-			return 0
-		}
+		1
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "AddressTableCell", for: indexPath)
 		do {
-			let address = try walletService.fetchAddresses()[indexPath.row]
-			cell.textLabel?.text = String(address.index)
-			cell.detailTextLabel?.text = address.address
+			let address = try walletService().defaultAddress()
+			cell.textLabel?.text = String(indexPath.row)
+			cell.detailTextLabel?.text = address
 		} catch {
 			Utilities.log(error)
 		}
@@ -133,9 +107,10 @@ class ManageWalletViewController: UIViewController, UITableViewDelegate, UITable
 
 	func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
 		do {
-			let address = try walletService.fetchAddresses()[indexPath.row]
-			UIPasteboard.general.string = address.address
-			Utilities.showAlert(title: "Address Copied", message: "\(address.address) Copied to clipboard", completionHandler: nil)
+			let address = try walletService().defaultAddress()
+			UIPasteboard.general.string = address
+			Utilities.showAlert(title: "Address Copied", message: "\(address) Copied to clipboard",
+			                    completionHandler: nil)
 		} catch {
 			Utilities.log(error)
 		}

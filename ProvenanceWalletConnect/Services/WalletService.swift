@@ -29,14 +29,14 @@ class WalletService: NSObject {
 	}
 
 // MARK: - HD Wallet
-	func generatePrivateKey(mnemonic: String,
-	                        completion: @escaping (PrivateKey?, ProvenanceWalletError?) -> Void) throws -> Void {
+    func randomMnemonic() throws -> String {
+	    Mnemonic.create(strength: .hight)
+    }
+	
+	func generatePrivateKey(mnemonic: String) throws -> PrivateKey {
 		let seed = Mnemonic.createSeed(mnemonic: mnemonic)
 
-		let privateKey: PrivateKey = Utilities.mainnet() ?
-				PrivateKey(seed: seed, coin: .mainnet) : PrivateKey(seed: seed, coin: .testnet)
-
-		completion(privateKey, nil)
+		return Utilities.mainnet() ? PrivateKey(seed: seed, coin: .mainnet) : PrivateKey(seed: seed, coin: .testnet)
 	}
 
 	func defaultPrivateKey(index: UInt32 = 0) throws -> PrivateKey {
@@ -121,7 +121,9 @@ class WalletService: NSObject {
 			if let rootWallet = try fetchRootWalletEntity() {
 				container.viewContext.delete(rootWallet)
 			}
-			try container.viewContext.save()
+			if(container.viewContext.hasChanges) {
+				try container.viewContext.save()
+			}
 			return true
 		} catch {
 			Utilities.log(error)
@@ -152,34 +154,14 @@ class WalletService: NSObject {
 		}
 	}
 
-	func fetchAddressEntity(rootWallet: RootWallet, index: Int) throws -> Address? {
-		let address: Address? = rootWallet.addresses?.filter { e in
-			(e as! Address).index == Int32(index)
-		}.first as? Address
-		return address
-	}
-
-	func defaultAddress() -> String {
+	func defaultAddress() -> String? {
 		do {
-			return try fetchAddresses().first!.address!
+			return try fetchRootWalletEntity()?.defaultAddress
 		} catch {
 			Utilities.log(error)
 			return ""
 		}
 
-	}
-	
-	func fetchAddresses() throws -> [Address] {
-		guard let rootWallet = try fetchRootWalletEntity() else {
-			throw ProvenanceWalletError(kind: .rootWalletNotFound, message: "Root Wallet Not Found", messages: nil, underlyingError: nil)
-		}
-		let addresses = rootWallet.addresses?.map {  a in
-			a as! Address
-		} ?? []
-
-		return addresses.sorted { x, y  in
-			x.index < y.index
-		}
 	}
 	
 	func fetchRootWalletSerializedPublicKey() -> String? {
@@ -214,13 +196,8 @@ class WalletService: NSObject {
 			                                           plainText: privateKey.serialize(publicKeyOnly: false))
 			rootWallet.seedCipher = seedCipher
 			rootWallet.mainnet = Utilities.mainnet()
+			rootWallet.defaultAddress = try defaultPrivateKey().publicKey.address
 
-			/* Clean out old addresses */
-			for case let address as Address in rootWallet.addresses ?? NSSet() {
-				container.viewContext.delete(address)
-			}
-			try attachAddresses(privateKey: privateKey, rootWallet: rootWallet)
-			
 			try container.viewContext.save()
 			completion(uuid, nil)
 		} catch let error as NSError {
@@ -229,34 +206,6 @@ class WalletService: NSObject {
 					kind: .dataPersistence, message: error.localizedDescription, messages: nil, underlyingError: error)
 			)
 		}
-	}
-	private func attachAddresses(privateKey: PrivateKey, rootWallet: RootWallet) throws -> Void {
-		try addresses(privateKey: privateKey, startIndex: 0, endIndex: 10).enumerated().forEach({ (index, addr) in
-			let address = Address(entity: NSEntityDescription.entity(forEntityName: "Address",
-			                                                           in: container.viewContext)!, insertInto: container.viewContext)
-			address.address = addr
-			address.index = Int32(index)
-			address.rootWallet = rootWallet
-		})
-	}
-	func refreshAddresses() throws -> Void {
-		do {
-			guard let rootWallet = try fetchRootWalletEntity() else {
-				throw ProvenanceWalletError(kind: .rootWalletNotFound, message: "Root Wallet Not Found", messages: nil, underlyingError: nil)
-			}
-
-			for case let address as Address in rootWallet.addresses ?? NSSet() {
-				container.viewContext.delete(address)
-			}
-			
-			let key = try decryptWalletKey(rootWallet: rootWallet)
-			try attachAddresses(privateKey: key, rootWallet: rootWallet)
-			try container.viewContext.save()
-		} catch {
-			Utilities.log(error)
-			throw ProvenanceWalletError(kind: .dataPersistence, message: "Could Not Refresh", messages: nil, underlyingError: error)
-		}
-
 	}
 
 // MARK: - Blockchain
@@ -271,7 +220,7 @@ class WalletService: NSObject {
 	}
 
 	func queryBank() throws -> Cosmos_Base_V1beta1_Coin {
-		guard let address = try fetchAddresses().first?.address else {
+		guard let address = defaultAddress() else {
 			throw ProvenanceWalletError(kind: .walletAddressError, message: "Wallet Address not Found", messages: nil, underlyingError: nil)
 		}
 

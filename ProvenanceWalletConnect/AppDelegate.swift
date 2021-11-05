@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public var channel: ClientConnection!
     public var group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
+    public var walletService: WalletService!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -22,6 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                   .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
                                            port: Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090)
 
+        
+        walletService = WalletService(persistentContainer: persistentContainer, channel: channel)
+        
         return true
     }
 
@@ -76,6 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             do {
                 try context.save()
             } catch {
+                Utilities.log(error)
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nserror = error as NSError

@@ -11,7 +11,6 @@ import CoreData
 class RootViewController: UINavigationController {
 
     var wcUrl: String!
-    var container: NSPersistentContainer!
 
     override func viewDidLoad() {
         super.viewDidLoad()

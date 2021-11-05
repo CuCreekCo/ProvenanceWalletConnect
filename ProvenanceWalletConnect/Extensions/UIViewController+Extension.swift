@@ -18,20 +18,19 @@ extension UIViewController {
 		}
 	}
 
-	func persistentContainer() -> NSPersistentContainer {
-		// Is our parent the RootViewController?
-		if let rootVC =  parent as? RootViewController {
-			return rootVC.container
-		} else {
-			fatalError("This view needs a persistent container.")
-		}
-	}
-
 	private func appDelegate() -> AppDelegate {
 		UIApplication.shared.delegate as! AppDelegate
 	}
 
 	func channel() -> ClientConnection {
 		appDelegate().channel
+	}
+
+	func container() -> NSPersistentCloudKitContainer {
+		appDelegate().persistentContainer
+	}
+
+	func walletService() -> WalletService {
+		appDelegate().walletService
 	}
 }

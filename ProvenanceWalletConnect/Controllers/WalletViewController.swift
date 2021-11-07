@@ -26,22 +26,26 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-
 		do {
 			if (try walletService().fetchRootWalletEntity()) != nil {
-				self.connectedWalletView.isHidden = false
-				self.connectedWalletAddress.text = walletService().defaultAddress()
-				
-				if(server.openSessions().count > 0) {
-					self.disconnectWalletConnectView.isHidden = false
-				} else {
-					self.disconnectWalletConnectView.isHidden = true
-					self.scanWalletConnectView.isHidden = false
+				onMainThread {
+					self.connectWalletView.isHidden = true
+					self.connectedWalletView.isHidden = false
+					self.connectedWalletAddress.text = self.walletService().defaultAddress()
+
+					if(self.server.openSessions().count > 0) {
+						self.disconnectWalletConnectView.isHidden = false
+					} else {
+						self.disconnectWalletConnectView.isHidden = true
+						self.scanWalletConnectView.isHidden = false
+					}
 				}
-				
+
 			} else {
-				self.connectWalletView.isHidden = false
-				self.connectedWalletView.isHidden = true
+				onMainThread {
+					self.connectWalletView.isHidden = false
+					self.connectedWalletView.isHidden = true
+				}
 			}
 			
 		} catch {

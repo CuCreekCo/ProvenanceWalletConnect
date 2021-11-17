@@ -50,14 +50,15 @@ class BaseHandler: RequestHandler {
 		}
 	}
 
-	func askToSend(request: Request, message: Message, displayMessage: String, gasFee: UInt64, send: @escaping () throws -> Cosmos_Base_Abci_V1beta1_TxResponse) {
+	func askToSend(request: Request, message: Message, displayMessage: String, gasFee: UInt64, send: @escaping () throws -> RawTxResponsePair) {
 		let onSend = {
 			do {
 				
-				let txResponse = try send()
+				let rawTxPair = try send()
+			    let txResponse = rawTxPair.txResponse
 				if (txResponse.code == 0) {
 					Utilities.log(txResponse.rawLog)
-					self.server.send(.transaction(txResponse.txhash, for: request))
+					try self.server.send(.rawTxResponse(rawTxPair, for: request))
 					DispatchQueue.main.async {
 						Utilities.showAlert(title: "Success", message: "\(txResponse.rawLog)", completionHandler: nil)
 					}

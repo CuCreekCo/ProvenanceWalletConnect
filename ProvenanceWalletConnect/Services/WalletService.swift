@@ -246,7 +246,7 @@ class WalletService: NSObject {
 		return try estPromise.wait()
 	}
 
-	func broadcastTx(signingKey: PrivateKey, message: Message, gasEstimate: Cosmos_Base_Abci_V1beta1_GasInfo) throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
+	func broadcastTx(signingKey: PrivateKey, message: Message, gasEstimate: Cosmos_Base_Abci_V1beta1_GasInfo) throws -> RawTxResponsePair {
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
 
@@ -254,7 +254,7 @@ class WalletService: NSObject {
 
 		let txMsg = try Google_Protobuf_Any.from(message: message)
 
-		let txPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_TxResponse> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: [txMsg])
+		let txPromise: EventLoopFuture<RawTxResponsePair> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: [txMsg])
 		return try txPromise.wait()
 	}
 

@@ -7,6 +7,7 @@ import UIKit
 import ProvWallet
 import SwiftProtobuf
 import WalletConnectSwift
+import SwiftyJSON
 
 class BaseHandler: RequestHandler {
 	weak var controller: UIViewController!
@@ -28,7 +29,7 @@ class BaseHandler: RequestHandler {
 		Utilities.log(request)
 	}
 
-	func askToSign(request: Request, message: String, sign: @escaping () throws -> String) {
+	func askToSign(request: Request, description: String, message: String, sign: @escaping () throws -> String) {
 		let onSign = {
 			do {
 				let signature = try sign()
@@ -43,19 +44,20 @@ class BaseHandler: RequestHandler {
 		}
 		DispatchQueue.main.async {
 			UIAlertController.showShouldSign(from: self.controller,
-			                                 title: "Request to sign a message",
+			                                 title: description,
 			                                 message: message,
 			                                 onSign: onSign,
 			                                 onCancel: onCancel)
 		}
 	}
 
-	func askToSend(request: Request, message: Message, displayMessage: String, gasFee: UInt64, send: @escaping () throws -> RawTxResponsePair) {
+	func askToSend(request: Request, message: Message, description: String,
+	               displayMessage: String, gasFee: UInt64, send: @escaping () throws -> RawTxResponsePair) {
 		let onSend = {
 			do {
-				
+
 				let rawTxPair = try send()
-			    let txResponse = rawTxPair.txResponse
+				let txResponse = rawTxPair.txResponse
 				if (txResponse.code == 0) {
 					Utilities.log(txResponse.rawLog)
 					try self.server.send(.rawTxResponse(rawTxPair, for: request))
@@ -84,7 +86,7 @@ class BaseHandler: RequestHandler {
 		}
 		DispatchQueue.main.async {
 			UIAlertController.showShouldSend(from: self.controller,
-			                                 title: "Send Message",
+			                                 title: description,
 			                                 message: "\(displayMessage) will cost \(gasFee)\(Tx.baseDenom)",
 			                                 onSend: onSend,
 			                                 onCancel: onCancel)
@@ -100,17 +102,20 @@ class PersonalSignHandler: BaseHandler {
 
 	override func handle(request: Request) {
 		do {
+			let metadata = try request.parameter(of: String.self, at: 0)
+			let metaJSON = JSON.init(parseJSON: metadata);
 			let messageBytes = try request.parameter(of: String.self, at: 1)
-			let address = try request.parameter(of: String.self, at: 0)
 
-			guard address == walletService.defaultAddress() else {
+			guard metaJSON["address"].stringValue == walletService.defaultAddress() else {
 				server.send(.reject(request))
 				return
 			}
 
+			let description = metaJSON["description"].stringValue
+
 			let decodedMessage = String(data: Data(hex: messageBytes), encoding: .utf8) ?? messageBytes
 
-			askToSign(request: request, message: decodedMessage) {
+			askToSign(request: request, description: description, message: decodedMessage) {
 				let messageData = Data(hex: messageBytes).sha256()
 				return try self.walletService.sign(messageData: messageData).toHexString()
 			}
@@ -133,12 +138,20 @@ class SendTransactionHandler: BaseHandler {
 	override func handle(request: Request) {
 		do {
 			Utilities.log(request)
-			let address = try request.parameter(of: String.self, at: 0)
+			let metadata = try request.parameter(of: String.self, at: 0)
+			let metaJSON = JSON.init(parseJSON: metadata);
+			let description = metaJSON["description"].stringValue
+
+			guard metaJSON["address"].stringValue == walletService.defaultAddress() else {
+				server.send(.reject(request))
+				return
+			}
+
 			let (type, message) = try decodeMessage(request: request)
 
 			let signingKey = try walletService.defaultPrivateKey()
 			//TODO assert signing key == address in request
-			
+
 			let gasEstimate = try walletService.estimateTx(signingKey: signingKey, message: message)
 			let displayMessage = try message.jsonString()
 			var gas = (Double(gasEstimate.gasUsed) * 1.3)
@@ -146,7 +159,8 @@ class SendTransactionHandler: BaseHandler {
 
 			let gasFee = UInt64(gas) * Tx.gasPrice
 
-			askToSend(request: request, message: message, displayMessage: displayMessage, gasFee: gasFee) {
+			askToSend(request: request, message: message, description: description, displayMessage: displayMessage,
+			          gasFee: gasFee) {
 				try self.walletService.broadcastTx(signingKey: signingKey, message: message, gasEstimate: gasEstimate)
 			}
 		} catch {

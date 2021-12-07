@@ -70,25 +70,19 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
     @IBAction func disconnectWallet(_ sender: Any) {
 	    let disconnected = walletService().disconnectWallet()
 	    if(disconnected) {
-		    self.connectWalletView.isHidden = false
-		    self.connectedWalletView.isHidden = true
-		    do {
-			    if(session != nil) {
-				    try server.disconnect(from: session)
-			    }
+		    connectWalletView.isHidden = false
+		    connectedWalletView.isHidden = true
+		    if(session != nil) {
+			    serverDisconnect(session: session);
 			    scanWalletConnectView.isHidden = false
 			    disconnectWalletConnectView.isHidden = true
-		    } catch {
-			    Utilities.log(error)
 		    }
 	    }
     }
     @IBAction func disconnectWalletConnect(_ sender: Any) {
-	    do {
-		    try server.disconnect(from: session)
-	    } catch {
-		    Utilities.log(error)
-	    }
+	    serverDisconnect(session: session);
+	    scanWalletConnectView.isHidden = false
+	    disconnectWalletConnectView.isHidden = true
     }
 
 	@IBAction func didTouchUpAddress(_ sender: Any) {
@@ -170,6 +164,14 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		// no-op
 	}
 
+	func serverDisconnect(session: Session) {
+		do {
+			try server.disconnect(from: session)
+		} catch {
+			Utilities.log(error)
+		}
+	}
+	
 // MARK: - Navigation
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

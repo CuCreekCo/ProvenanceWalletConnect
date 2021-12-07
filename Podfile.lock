@@ -93,7 +93,7 @@ PODS:
     - Starscream (~> 3.1)
 
 DEPENDENCIES:
-  - ProvWallet (from `~/git/provwallet-swift`)
+  - ProvWallet (~> 0.0.7)
   - SwiftyJSON (~> 4.0)
   - WalletConnectSwift
 
@@ -112,6 +112,7 @@ SPEC REPOS:
     - gRPC-Swift
     - gRPC-Swift-Plugins
     - Logging
+    - ProvWallet
     - secp256k1.swift
     - Starscream
     - SwiftNIO
@@ -130,10 +131,6 @@ SPEC REPOS:
     - SwiftProtobuf
     - SwiftyJSON
     - WalletConnectSwift
-
-EXTERNAL SOURCES:
-  ProvWallet:
-    :path: "~/git/provwallet-swift"
 
 SPEC CHECKSUMS:
   _NIODataStructures: e2077c7dc7c1d6c93e698c85fe04d663a17f53a4
@@ -169,6 +166,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   WalletConnectSwift: 1fbff8f5315bd8d41596773ca1b384aa873b6824
 
-PODFILE CHECKSUM: acb44409d3a3b5b3ffbcc6a4974d01b1273eca2c
+PODFILE CHECKSUM: 1c0fd127d27885a071e054f7c39c589cb79f8fd9
 
 COCOAPODS: 1.11.2

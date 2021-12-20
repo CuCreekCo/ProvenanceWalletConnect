@@ -112,7 +112,9 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 	func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
 		var publicKey: String = ""
 		do {
-			publicKey = try walletService().defaultPrivateKey().serialize()
+			publicKey = try walletService().defaultPrivateKey()
+			                               .publicKey.compressedPublicKey
+			                               .toBase64URLWithoutPadding()
 		} catch {
 			Utilities.log(error)
 		}

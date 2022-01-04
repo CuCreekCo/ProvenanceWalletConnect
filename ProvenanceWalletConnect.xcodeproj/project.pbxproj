@@ -805,7 +805,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ProvenanceWalletConnect/ProvenanceWalletConnect.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = NGCP4B65KR;
 				INFOPLIST_FILE = ProvenanceWalletConnect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -827,7 +827,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ProvenanceWalletConnect/ProvenanceWalletConnect.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = NGCP4B65KR;
 				INFOPLIST_FILE = ProvenanceWalletConnect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

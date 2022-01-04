@@ -188,6 +188,14 @@ class SendTransactionHandler: BaseHandler {
 		switch msgAny.typeURL {
 			case "/cosmos.bank.v1beta1.MsgSend":
 				return (msgAny.typeURL, try Cosmos_Bank_V1beta1_MsgSend(unpackingAny: msgAny))
+			case "/provenance.marker.v1.MsgAddMarkerRequest":
+				return (msgAny.typeURL, try Provenance_Marker_V1_MsgAddMarkerRequest(unpackingAny: msgAny))
+			case "/provenance.marker.v1.MsgActivateRequest":
+				return (msgAny.typeURL, try Provenance_Marker_V1_MsgActivateRequest(unpackingAny: msgAny))
+			case "/provenance.marker.v1.MsgCancelRequest":
+				return (msgAny.typeURL, try Provenance_Marker_V1_MsgCancelRequest(unpackingAny: msgAny))
+			case "/provenance.metadata.v1.MsgWriteScopeRequest":
+				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgWriteScopeRequest(unpackingAny: msgAny))
 			default:
 				throw ProvenanceWalletError(kind: .unsupportedProvenanceMessage,
 				                            message: "wallet does not support \(msgAny.typeURL)",

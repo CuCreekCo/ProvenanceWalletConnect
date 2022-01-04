@@ -115,6 +115,8 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 			publicKey = try walletService().defaultPrivateKey()
 			                               .publicKey.compressedPublicKey
 			                               .toBase64URLWithoutPadding()
+			Utilities.log("Public key \(publicKey)")
+			
 		} catch {
 			Utilities.log(error)
 		}

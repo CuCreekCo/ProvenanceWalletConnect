@@ -415,7 +415,8 @@ class SendTransactionHandler: BaseHandler {
 				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgStoreCode(unpackingAny: msgAny))
 			case "/cosmwasm.wasm.v1.MsgUpdateAdmin":
 				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgUpdateAdmin(unpackingAny: msgAny))
-
+			case "/cosmwasm.wasm.v1.MsgUpdateAdmin":
+				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_TxBody(unpackingAny: msgAny))
 			default:
 				throw ProvenanceWalletError(kind: .unsupportedProvenanceMessage,
 				                            message: "wallet does not support \(msgAny.typeURL)",

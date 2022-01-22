@@ -36,7 +36,7 @@ class BaseHandler: RequestHandler {
 				self.server.send(.signature(signature, for: request))
 			} catch {
 				Utilities.log(error)
-				self.server.send(.reject(request))
+				self.server.send(.error(error, for: request))
 			}
 		}
 		let onCancel = {
@@ -67,7 +67,7 @@ class BaseHandler: RequestHandler {
 
 				} else {
 					Utilities.log(txResponse.rawLog)
-					self.server.send(.reject(request))
+					try self.server.send(.rawTxErrorResponse(rawTxPair, for: request))
 					DispatchQueue.main.async {
 						Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)", completionHandler: nil)
 					}
@@ -75,7 +75,7 @@ class BaseHandler: RequestHandler {
 				}
 			} catch {
 				Utilities.log(error)
-				self.server.send(.reject(request))
+				self.server.send(.error(error, for: request))
 				DispatchQueue.main.async {
 					Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
 				}
@@ -107,7 +107,7 @@ class PersonalSignHandler: BaseHandler {
 			let messageBytes = try request.parameter(of: String.self, at: 1)
 
 			guard metaJSON["address"].stringValue == walletService.defaultAddress() else {
-				server.send(.reject(request))
+				self.server.send(.error("Wallet address \(walletService.defaultAddress() ?? "null") does not match request address \(metaJSON["address"].stringValue)", for: request))
 				return
 			}
 
@@ -120,7 +120,7 @@ class PersonalSignHandler: BaseHandler {
 				return try self.walletService.sign(messageData: messageData).toHexString()
 			}
 		} catch {
-			server.send(.invalid(request))
+			self.server.send(.error(error, for: request))
 			DispatchQueue.main.async {
 				Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
 			}
@@ -143,7 +143,7 @@ class SendTransactionHandler: BaseHandler {
 			let description = metaJSON["description"].stringValue
 
 			guard metaJSON["address"].stringValue == walletService.defaultAddress() else {
-				server.send(.reject(request))
+				self.server.send(.error("Wallet address \(walletService.defaultAddress() ?? "null") does not match request address \(metaJSON["address"].stringValue)", for: request))
 				return
 			}
 
@@ -165,7 +165,7 @@ class SendTransactionHandler: BaseHandler {
 			}
 		} catch {
 			Utilities.log(error)
-			server.send(.invalid(request))
+			self.server.send(.error(error, for: request))
 			DispatchQueue.main.async {
 				Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
 			}

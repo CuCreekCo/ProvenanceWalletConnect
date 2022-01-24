@@ -8,6 +8,7 @@ import GRPC
 import NIO
 import SwiftProtobuf
 import CoreData
+import SwiftyJSON
 
 class WalletService: NSObject {
 	
@@ -93,7 +94,33 @@ class WalletService: NSObject {
 		let privateKey = try defaultPrivateKey()
 		return try privateKey.sign(data: messageData).provenanceSignature
 	}
-	
+
+// MARK: - JWT
+	func signed_jwt(privateKey: PrivateKey) throws -> String {
+		let now = Int(Date.init().timeIntervalSince1970)
+		let headerDict = [
+			"alg": "ES256K",
+			"typ": "JWT"
+		]
+		let payloadDict = [
+			"sub": privateKey.publicKey.compressedPublicKey.toBase64URLWithoutPadding(),
+			"iss": "provenance.io",
+			"iat": now,
+			"exp": now + (24 * 60 * 60),
+			"addr": privateKey.publicKey.address
+		] as [String: Any]
+		
+		let headerJSON = JSON(headerDict).rawString([.encoding : String.Encoding.utf8])
+		let header = headerJSON!.data(using: .utf8)!.toBase64URLWithoutPadding()
+		
+		let payloadJSON = JSON(payloadDict).rawString([.encoding : String.Encoding.utf8])
+		let payload = payloadJSON!.data(using: .utf8)!.toBase64URLWithoutPadding()
+
+		let signMe = "\(header).\(payload)"
+		let signature = try privateKey.sign(data: signMe.data(using: .utf8)!.sha256()).provenanceSignature
+		return "\(signMe).\(signature.toBase64URLWithoutPadding())"
+	}
+
 // MARK: - Wallet Cipher
 	private func decryptWalletKey(rootWallet: RootWallet) throws -> PrivateKey {
 		guard let uuid = rootWallet.id else {

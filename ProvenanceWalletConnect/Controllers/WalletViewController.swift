@@ -33,7 +33,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 					self.connectedWalletView.isHidden = false
 					self.connectedWalletAddress.text = self.walletService().defaultAddress()
 
-					if(self.server.openSessions().count > 0) {
+					if (self.server.openSessions().count > 0) {
 						self.disconnectWalletConnectView.isHidden = false
 					} else {
 						self.disconnectWalletConnectView.isHidden = true
@@ -47,7 +47,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 					self.connectedWalletView.isHidden = true
 				}
 			}
-			
+
 		} catch {
 			Utilities.log(error)
 		}
@@ -55,35 +55,36 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 	}
 
 // MARK: - IBOutlets
-    
-    @IBOutlet weak var connectedWalletView: UIView!
-    @IBOutlet weak var connectedWalletAddress: UITextField!
-    
-    @IBOutlet weak var disconnectWalletConnectView: UIView!
-    
-    @IBOutlet weak var scanWalletConnectView: UIView!
-    @IBOutlet weak var connectWalletView: UIView!
-    @IBOutlet weak var walletConnectPeerLabel: UILabel!
-    
-    // MARK: - IBActions
-    
-    @IBAction func disconnectWallet(_ sender: Any) {
-	    let disconnected = walletService().disconnectWallet()
-	    if(disconnected) {
-		    connectWalletView.isHidden = false
-		    connectedWalletView.isHidden = true
-		    if(session != nil) {
-			    serverDisconnect(session: session);
-			    scanWalletConnectView.isHidden = false
-			    disconnectWalletConnectView.isHidden = true
-		    }
-	    }
-    }
-    @IBAction func disconnectWalletConnect(_ sender: Any) {
-	    serverDisconnect(session: session);
-	    scanWalletConnectView.isHidden = false
-	    disconnectWalletConnectView.isHidden = true
-    }
+
+	@IBOutlet weak var connectedWalletView: UIView!
+	@IBOutlet weak var connectedWalletAddress: UITextField!
+
+	@IBOutlet weak var disconnectWalletConnectView: UIView!
+
+	@IBOutlet weak var scanWalletConnectView: UIView!
+	@IBOutlet weak var connectWalletView: UIView!
+	@IBOutlet weak var walletConnectPeerLabel: UILabel!
+
+	// MARK: - IBActions
+
+	@IBAction func disconnectWallet(_ sender: Any) {
+		let disconnected = walletService().disconnectWallet()
+		if (disconnected) {
+			connectWalletView.isHidden = false
+			connectedWalletView.isHidden = true
+			if (session != nil) {
+				serverDisconnect(session: session);
+				scanWalletConnectView.isHidden = false
+				disconnectWalletConnectView.isHidden = true
+			}
+		}
+	}
+
+	@IBAction func disconnectWalletConnect(_ sender: Any) {
+		serverDisconnect(session: session);
+		scanWalletConnectView.isHidden = false
+		disconnectWalletConnectView.isHidden = true
+	}
 
 	@IBAction func didTouchUpAddress(_ sender: Any) {
 		let address = connectedWalletAddress.text
@@ -92,6 +93,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		                    completionHandler: nil)
 
 	}
+
 // MARK: - WalletConnect
 
 	private func configureServer() {
@@ -103,6 +105,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 			try? server.reconnect(to: session)
 		}
 	}
+
 	func server(_ server: Server, didFailToConnect url: WCURL) {
 		onMainThread {
 			UIAlertController.showFailedToConnect(from: self)
@@ -111,24 +114,31 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 
 	func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
 		var publicKey: String = ""
+		var signedJWT: String = ""
+
 		do {
-			publicKey = try walletService().defaultPrivateKey()
-			                               .publicKey.compressedPublicKey
-			                               .toBase64URLWithoutPadding()
+			let privateKey = try walletService().defaultPrivateKey()
+			publicKey = privateKey.publicKey.compressedPublicKey
+			                      .toBase64URLWithoutPadding()
+
 			Utilities.log("Public key \(publicKey)")
-			
+
+			signedJWT = try walletService().signed_jwt(privateKey: privateKey)
+			Utilities.log("signed JWT \(signedJWT)")
+
 		} catch {
 			Utilities.log(error)
 		}
 
-		let walletMeta = Session.ClientMeta(name: "Provenance Wallet",
-		                                    description: nil,
+		let walletMeta = Session.ClientMeta(name: "Unicorn Sparkle",
+		                                    description: "Provenance Sparkly Unicorn Wallet",
 		                                    icons: [],
 		                                    url: URL(string: "https://provenance.io")!)
 		let walletInfo = Session.WalletInfo(approved: true,
 		                                    accounts: [
 			                                    walletService().defaultAddress() ?? "UNKNOWN",
-			                                    publicKey
+			                                    publicKey,
+			                                    signedJWT
 		                                    ],
 		                                    chainId: 4,
 		                                    peerId: UUID().uuidString,
@@ -137,7 +147,8 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 			UIAlertController.showShouldStart(from: self, clientName: session.dAppInfo.peerMeta.name, onStart: {
 				completion(walletInfo)
 			}, onClose: {
-				completion(Session.WalletInfo(approved: false, accounts: [], chainId: 4, peerId: "", peerMeta: walletMeta))
+				completion(
+						Session.WalletInfo(approved: false, accounts: [], chainId: 4, peerId: "", peerMeta: walletMeta))
 				//self.scanQRCodeButton.isEnabled = true
 			})
 		}
@@ -175,7 +186,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 			Utilities.log(error)
 		}
 	}
-	
+
 // MARK: - Navigation
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -187,7 +198,9 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 
 // MARK: - QR Scanning
 	func didScan(_ code: String) {
-		guard let url = WCURL(code) else { return }
+		guard let url = WCURL(code) else {
+			return
+		}
 		self.disconnectWalletConnectView.isHidden = false
 		self.scanWalletConnectView.isHidden = true
 		do {

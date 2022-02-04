@@ -33,11 +33,23 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 					self.connectedWalletView.isHidden = false
 					self.connectedWalletAddress.text = self.walletService().defaultAddress()
 
-					if (self.server.openSessions().count > 0) {
-						self.disconnectWalletConnectView.isHidden = false
+					if let url = self.applicationOpenURL() {
+						if (self.server.openSessions().count > 0) {
+							self.disconnectWallet(self)
+						} else {
+							self.configureServer()
+						}
+
+						let wc = "\(url.user.unsafelyUnwrapped):\(url.password.unsafelyUnwrapped)@\(url.host.unsafelyUnwrapped)/?\(url.query.unsafelyUnwrapped)"
+						Utilities.log(wc)
+						self.didScan(wc)
 					} else {
-						self.disconnectWalletConnectView.isHidden = true
-						self.scanWalletConnectView.isHidden = false
+						if (self.server.openSessions().count > 0) {
+							self.disconnectWalletConnectView.isHidden = false
+						} else {
+							self.disconnectWalletConnectView.isHidden = true
+							self.scanWalletConnectView.isHidden = false
+						}
 					}
 				}
 
@@ -206,6 +218,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate, Ser
 		do {
 			try server.connect(to: url)
 		} catch {
+			Utilities.log(error)
 			return
 		}
 	}

@@ -33,4 +33,8 @@ extension UIViewController {
 	func walletService() -> WalletService {
 		appDelegate().walletService
 	}
+
+	func applicationOpenURL() -> URL? {
+		appDelegate().applicationOpenURL
+	}
 }

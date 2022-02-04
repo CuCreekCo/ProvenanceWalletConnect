@@ -26,6 +26,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          */
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            (UIApplication.shared.delegate as? AppDelegate)?.applicationOpenURL = url
+        }
+    }
+
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -46,6 +52,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        Utilities.log(scene)
+        if (((UIApplication.shared.delegate as? AppDelegate)?.applicationOpenURL) != nil) {
+            //opened via deep link, set link to nil
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+            windowScene.windows.first?.rootViewController?.beginAppearanceTransition(true, animated: true)
+            (UIApplication.shared.delegate as? AppDelegate)?.applicationOpenURL = nil
+        }
+        /*
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: windowScene)
+        window?.makeKeyAndVisible()
+        window?.rootViewController = UINavigationController(rootViewController: WalletViewController())
+         
+         */
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

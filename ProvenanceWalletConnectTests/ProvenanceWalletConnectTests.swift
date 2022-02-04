@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import ProvenanceWalletConnect
-
 class ProvenanceWalletConnectTests: XCTestCase {
 
     override func setUpWithError() throws {

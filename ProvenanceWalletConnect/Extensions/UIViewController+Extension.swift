@@ -37,4 +37,8 @@ extension UIViewController {
 	func applicationOpenURL() -> URL? {
 		appDelegate().applicationOpenURL
 	}
+
+	func notificationService() -> NotificationService {
+		appDelegate().notificationService
+	}
 }

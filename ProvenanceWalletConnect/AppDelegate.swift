@@ -14,6 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     public var channel: ClientConnection!
     public var group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
     public var walletService: WalletService!
+
+    let notificationService = NotificationService()
+
     public var applicationOpenURL: URL?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

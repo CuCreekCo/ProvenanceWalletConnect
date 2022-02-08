@@ -8,8 +8,12 @@
 import UIKit
 import CoreData
 import GRPC
+import IQKeyboardManagerSwift
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
 
     public var channel: ClientConnection!
     public var group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
@@ -22,14 +26,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        channel = ClientConnection.insecure(group: group)
+        channel = ClientConnection.usingPlatformAppropriateTLS(for: group)
                                   .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
                                   .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
                                            port: Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090)
 
-        
         walletService = WalletService(persistentContainer: persistentContainer, channel: channel)
-        
+
+        IQKeyboardManager.shared.enable = true
+
+        window = UIWindow()
+        let walletViewController = WalletViewController()
+        let navController = NavigationController(rootViewController: walletViewController)
+        window?.rootViewController = navController
+        window?.makeKeyAndVisible()
+
         return true
     }
 

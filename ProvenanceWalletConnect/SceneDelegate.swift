@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,7 +17,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+
+        let window = UIWindow(windowScene: windowScene)
+        let walletViewController = WalletViewController()
+        let navController = NavigationController(rootViewController: walletViewController)
+        window.rootViewController = navController
+
+        IQKeyboardManager.shared.enable = true
+
+        self.window = window
+        window.makeKeyAndVisible()
 
         /*
         if let rootVC = window?.rootViewController as? RootViewController {
@@ -56,8 +67,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if (((UIApplication.shared.delegate as? AppDelegate)?.applicationOpenURL) != nil) {
             //opened via deep link, set link to nil
             guard let windowScene = (scene as? UIWindowScene) else { return }
+            windowScene.windows.first?.rootViewController?.show(WalletViewController(), sender: self)
             windowScene.windows.first?.rootViewController?.beginAppearanceTransition(true, animated: true)
-            (UIApplication.shared.delegate as? AppDelegate)?.applicationOpenURL = nil
         }
         /*
         guard let windowScene = (scene as? UIWindowScene) else { return }

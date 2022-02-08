@@ -1,6 +1,9 @@
 PODS:
   - _NIODataStructures (2.32.3)
   - CGRPCZlib (1.4.2)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
   - CNIOAtomics (2.32.3)
   - CNIOBoringSSL (2.15.1)
   - CNIOBoringSSLShims (2.15.1):
@@ -21,6 +24,7 @@ PODS:
     - SwiftProtobuf (< 2.0.0, >= 1.9.0)
   - gRPC-Swift-Plugins (1.4.2):
     - gRPC-Swift (= 1.4.2)
+  - IQKeyboardManagerSwift (6.5.9)
   - Logging (1.4.0)
   - ProvWallet (0.0.7):
     - CryptoSwift (~> 1.4.0)
@@ -93,6 +97,8 @@ PODS:
     - Starscream (~> 3.1)
 
 DEPENDENCIES:
+  - Charts
+  - IQKeyboardManagerSwift
   - ProvWallet (~> 0.0.7)
   - SwiftyJSON (~> 4.0)
   - WalletConnectSwift
@@ -101,6 +107,7 @@ SPEC REPOS:
   trunk:
     - _NIODataStructures
     - CGRPCZlib
+    - Charts
     - CNIOAtomics
     - CNIOBoringSSL
     - CNIOBoringSSLShims
@@ -111,6 +118,7 @@ SPEC REPOS:
     - CryptoSwift
     - gRPC-Swift
     - gRPC-Swift-Plugins
+    - IQKeyboardManagerSwift
     - Logging
     - ProvWallet
     - secp256k1.swift
@@ -135,6 +143,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   _NIODataStructures: e2077c7dc7c1d6c93e698c85fe04d663a17f53a4
   CGRPCZlib: e563581ed595e2a9d85fce8b833606040bb63742
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CNIOAtomics: 4dde57e1838a29a9b23ef91617505f34751cdbe5
   CNIOBoringSSL: c99129423da079a9eb74bcfc7cfec41a6775cf94
   CNIOBoringSSLShims: 902ae35fea0b6be5eefb4fdce906751886cfa46f
@@ -145,6 +154,7 @@ SPEC CHECKSUMS:
   CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
   gRPC-Swift: 3e11bcfbb92f345b7ee8e1fb9ee4b6ae408c3774
   gRPC-Swift-Plugins: 6c2a4d17afd229a4c4d1b5fcff46869dd250492d
+  IQKeyboardManagerSwift: 6e839c575c4aa1078d58a596e41244e77abe918f
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
   ProvWallet: a46a15fc6f42f09ad92078a3cc3bec2b70cf1419
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
@@ -166,6 +176,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   WalletConnectSwift: 1fbff8f5315bd8d41596773ca1b384aa873b6824
 
-PODFILE CHECKSUM: 1c0fd127d27885a071e054f7c39c589cb79f8fd9
+PODFILE CHECKSUM: fea13c82d74449a3cd8310b6452b1697511fcf9f
 
 COCOAPODS: 1.11.2

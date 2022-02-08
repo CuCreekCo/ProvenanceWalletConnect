@@ -7,16 +7,25 @@ import Foundation
 import UIKit
 import ProvWallet
 import CoreData
+import IQKeyboardManagerSwift
 
 class ManageWalletViewController: UIViewController {
 
-// MARK: - UI
+    @IBOutlet weak var layoutConstraintBottom: NSLayoutConstraint!
+    // MARK: - UI
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+		IQKeyboardManager.shared.enable = false
+	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		if (walletService().rootWalletSeedExists()) {
 			let address = walletService().fetchRootWalletSerializedPublicKey()
 			mnemonicText.text = address
-			mnemonicText.isEditable = false
 		} else {
 			do {
 				mnemonicText.text = try walletService().randomMnemonic()
@@ -24,44 +33,61 @@ class ManageWalletViewController: UIViewController {
 				Utilities.log(error)
 			}
 		}
-
-		//Set up keyboard dismiss on mnemonic text field
-		let toolbar = UIToolbar()
-		let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
-		                                target: nil, action: nil)
-		let doneButton = UIBarButtonItem(title: "Done", style: .done,
-		                                 target: self, action: #selector(doneButtonTapped))
-
-		toolbar.setItems([flexSpace, doneButton], animated: true)
-		toolbar.sizeToFit()
-
-		mnemonicText.inputAccessoryView = toolbar
 	}
+
+	override func viewWillDisappear(_ animated: Bool) {
+
+		super.viewWillDisappear(animated)
+		NotificationCenter.default.removeObserver(self)
+		IQKeyboardManager.shared.enable = true
+	}
+
 	@objc func doneButtonTapped() {
 		view.endEditing(true)
 	}
 
+	@objc func keyboardWillShow(_ notification: Notification) {
+
+		if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+			let keyboardRectangle = keyboardFrame.cgRectValue
+			let keyboardHeight = keyboardRectangle.height
+			UIView.animate(withDuration: 0.5) {
+				self.layoutConstraintBottom.constant = keyboardHeight
+			}
+			UIView.animate(withDuration: 0.5, animations: {
+				self.layoutConstraintBottom.constant = keyboardHeight
+			}) { (isComplete) in
+				self.layoutConstraintBottom.constant -= self.view.safeAreaInsets.bottom
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	@objc func keyboardWillHide(_ notification: Notification) {
+
+		UIView.animate(withDuration: 0.5) {
+			self.layoutConstraintBottom.constant = 0
+		}
+	}
+
 // MARK: - IBOutlet
 
-	@IBOutlet weak var importButton: UIBarButtonItem!
-
-	@IBOutlet weak var statusIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var setRandomPhraseButton: UIButton!
+    
+    @IBOutlet weak var importPhraseButton: UIButton!
+    @IBOutlet weak var statusIndicator: UIActivityIndicatorView!
 
 	@IBOutlet weak var mnemonicText: UITextView!
 
 // MARK: - IBAction
-	@IBAction func generateMnemonic(_ sender: UIBarButtonItem) {
+	
+    @IBAction func generateMnemonic(_ sender: Any) {
 		mnemonicText.text = Mnemonic.create(strength: .hight)
 		onMainThread { [self] in
-			importButton.isEnabled = true
+            importPhraseButton.isEnabled = true
 		}
 	}
-
-	@IBAction func clearMnemonic(_ sender: UIBarButtonItem) {
-		mnemonicText.text = ""
-	}
-
-	@IBAction func importMnemonic(_ sender: UIBarButtonItem) {
+    @IBAction func importPhrase(_ sender: Any) {
 		if (mnemonicText.text.length == 0) {
 			onMainThread {
 				ErrorHandler.show(title: "Mnemonic Required", message: "Please enter a mnemonic value.", completionHandler: nil)
@@ -69,7 +95,7 @@ class ManageWalletViewController: UIViewController {
 		} else {
 			onMainThread { [self] in
 				statusIndicator.startAnimating()
-				importButton.isEnabled = false
+				importPhraseButton.isEnabled = false
 			}
 			DispatchQueue.global(qos: .default).async {
 				do {
@@ -80,7 +106,6 @@ class ManageWalletViewController: UIViewController {
 						ErrorHandler.show(title: "Key Serialization Error", message: error.localizedDescription,
 						                  completionHandler: nil)
 					}
-					//TODO encrypt private key with enclave and store in Core Data
 					self.walletService().saveRootWallet(privateKey: key) { (uuid, saveError) in
 						if (saveError != nil) {
 							ErrorHandler.show(title: "Save Root Wallet", message: saveError!.localizedDescription,

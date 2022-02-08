@@ -19,9 +19,7 @@ enum WalletState {
 	case not_walletconnected
 }
 
-class WalletViewController: UIViewController,
-		UITableViewDataSource,
-		ScannerViewControllerDelegate, ServerDelegate {
+class WalletViewController: UIViewController, ScannerViewControllerDelegate, ServerDelegate {
 
 	var server: Server!
 	var session: Session!
@@ -31,14 +29,17 @@ class WalletViewController: UIViewController,
 	var walletConnectQueue: [(Notification.Name, Request)] = []
 
 // MARK: - IBOutlets
-
-	@IBOutlet weak var disconnectWalletButton: UIButton!
-	@IBOutlet weak var connectWalletButton: UIButton!
-	@IBOutlet weak var scanWalletConnectQRButton: UIButton!
-	@IBOutlet weak var disconnectWalletConnectButton: UIButton!
-	@IBOutlet weak var connectedWalletAddress: UITextField!
-	@IBOutlet weak var walletConnectPeerLabel: UILabel!
-	@IBOutlet weak var walletConnectTable: UITableView!
+	@IBOutlet var viewTitle: UIView!
+	@IBOutlet var labelTitle: UILabel!
+	@IBOutlet var labelBalance: UILabel!
+	@IBOutlet var collectionView: UICollectionView!
+	@IBOutlet var connectedAppIcon: UIImageView!
+	@IBOutlet var connectedApp: UILabel!
+    @IBOutlet weak var connectedAppDetails: UILabel!
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var sendHashButton: UIButton!
 
 // MARK: - IBActions
 
@@ -46,25 +47,60 @@ class WalletViewController: UIViewController,
 		let disconnected = walletService().disconnectWallet()
 		if (disconnected) {
 			if (session != nil) {
-				serverDisconnect(session: session);
+				serverDisconnect();
 			}
 			onMainThread {
 				self.setButtonState([.no_wallet])
+
 			}
 		}
 	}
 
-	@IBAction func disconnectWalletConnect(_ sender: Any) {
-		serverDisconnect(session: session);
-	}
-
-	@IBAction func didTouchUpAddress(_ sender: Any) {
-		let address = connectedWalletAddress.text
+    @IBAction func copyAddress(_ sender: Any) {
+		let address = labelTitle.text
 		UIPasteboard.general.string = address
 		Utilities.showAlert(title: "Address Copied", message: "\(address) Copied to clipboard",
 		                    completionHandler: nil)
+	}
+
+	// MARK: - Refresh methods
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func refreshCollectionView() {
+
+		collectionView.reloadData()
+	}
+
+	// MARK: - User actions
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	@objc func actionProfile(_ sender: UIButton) {
+
+		print(#function)
+		navigationController?.pushViewController(ManageWalletViewController(), animated: true)
+	}
+	
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	@IBAction func actionDisconnectWalletConnect(_ sender: UIButton) {
+
+		print(#function)
+		serverDisconnect()
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	@IBAction func actionWalletConnectInfo(_ sender: UIButton) {
+
+		print(#function)
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	@IBAction func actionConnectWalletConnect(_ sender: UIButton) {
+
+		print(#function)
+		let qrCapture = QRCaptureViewController()
+		qrCapture.delegate = self
+		navigationController?.pushViewController(qrCapture, animated: true)
 
 	}
+
 
 // MARK: - UI
 	func observeWalletConnectRequests() {
@@ -76,40 +112,72 @@ class WalletViewController: UIViewController,
 		                                            selector: #selector(handleWalletConnectRequest)))
 	}
 
-	func setButtonState(_ walletStates: [WalletState]) {
+	func setButtonState(_ walletStates: [WalletState], dAppInfo: Session.DAppInfo? = nil) {
+		self.connectedApp.text = dAppInfo?.peerMeta.name ?? "--"
+		self.connectedAppDetails.text = dAppInfo?.peerMeta.description ?? "--"
+		
+		if (dAppInfo != nil) {
+			self.connectedAppIcon.greenCircle()
+		} else {
+			self.connectedAppIcon.grayCircle()
+		}
+
+
+		/*
+
 		if (walletStates.contains(.has_wallet)) {
-			connectWalletButton.isHidden = true
-			disconnectWalletButton.isHidden = false
 		}
 		if (walletStates.contains(.no_wallet)) {
-			connectWalletButton.isHidden = false
-			disconnectWalletButton.isHidden = true
-			scanWalletConnectQRButton.isHidden = true
-			disconnectWalletConnectButton.isHidden = true
+			disconnectWalletConnectTabBarItem.isEnabled = false
+			walletConnectTabBarItem.isEnabled = false
 		}
 		if (walletStates.contains(.walletconnected)) {
-			disconnectWalletConnectButton.isHidden = false
-			scanWalletConnectQRButton.isHidden = true
+			disconnectWalletConnectTabBarItem.isEnabled = true
+			walletConnectTabBarItem.isEnabled = false
 		}
 		if (walletStates.contains(.not_walletconnected)) {
-			scanWalletConnectQRButton.isHidden = false
-			disconnectWalletConnectButton.isHidden = true
+			disconnectWalletConnectTabBarItem.isEnabled = false
+			walletConnectTabBarItem.isEnabled = true
 		}
+		 
+		 */
 	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		navigationItem.leftBarButtonItem = UIBarButtonItem(customView: viewTitle)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle.fill"), style: .plain,
+		                                                    target: self, action: #selector(actionProfile))
+
+		collectionView.register(UINib(nibName: "WalletViewCell", bundle: Bundle.main),
+		                        forCellWithReuseIdentifier: "WalletViewCell")
+
+		configureServer()
+		observeWalletConnectRequests()
+
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		self.configureServer()
-		self.observeWalletConnectRequests()
+
+		if let navController = navigationController as? NavigationController {
+			navController.setBackground(color: .clear)
+		}
 
 		do {
 			if (try walletService().fetchRootWalletEntity()) != nil {
 				onMainThread {
-					self.connectedWalletAddress.text = self.walletService().defaultAddress()
+					self.labelTitle.text = self.walletService().defaultAddress()
+
+                    /*
+					do {
+						let coin = try self.walletService().queryBank()
+						self.labelBalance.text = "\((Int32(coin.amount) ?? 0 )/1000000000)"
+					} catch {
+						Utilities.log(error)
+					}
+                    */
 
 					self.setButtonState([.has_wallet])
 
@@ -122,12 +190,14 @@ class WalletViewController: UIViewController,
 							self.observeWalletConnectRequests()
 						}
 
+						//let wc = "\(url.user.unsafelyUnwrapped):\(url.password.unsafelyUnwrapped)@\(url.host.unsafelyUnwrapped)/?\(url.query.unsafelyUnwrapped)"
 						let wc = "\(url.user.unsafelyUnwrapped):\(url.password.unsafelyUnwrapped)@\(url.host.unsafelyUnwrapped)/?\(url.query.unsafelyUnwrapped)"
 						Utilities.log(wc)
 						self.didScan(wc)
+						self.clearApplicationOpenURL()
 					} else {
 						if (self.server.openSessions().count > 0) {
-							self.setButtonState([.walletconnected])
+							self.setButtonState([.walletconnected], dAppInfo: self.session.dAppInfo)
 						} else {
 							self.setButtonState([.not_walletconnected])
 						}
@@ -145,32 +215,77 @@ class WalletViewController: UIViewController,
 		}
 	}
 
-// MARK: - UITable
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return walletConnectQueue.count;
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+
+		do {
+
+			let coin =  try walletService().queryBank()
+			onMainThread {
+				self.labelBalance.text = "\(Double(coin.amount) ?? 0.0 / 1000000000)"
+			}
+		} catch {
+			Utilities.log(error)
+		}
 	}
 
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "WalletConnectTableCell", for: indexPath)
-		do {
-			cell.textLabel?.text = try walletConnectQueue[indexPath.row].1.description()
-		} catch {
-			cell.textLabel?.text = "\(error)"
+	override func viewWillDisappear(_ animated: Bool) {
+
+		super.viewWillDisappear(animated)
+
+		if let navBar = navigationController as? NavigationController {
+			navBar.setNavigationBar()
 		}
+	}
+
+}
+
+// MARK: - UICollectionViewDataSource
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+extension WalletViewController: UICollectionViewDataSource {
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func numberOfSections(in collectionView: UICollectionView) -> Int {
+
+		return 1
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+		walletConnectQueue.count
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WalletViewCell", for: indexPath) as! WalletViewCell
+		cell.bindData(index: indexPath, data: walletConnectQueue[indexPath.row])
 		return cell
 	}
+}
 
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+// MARK: - UICollectionViewDelegate
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+extension WalletViewController: UICollectionViewDelegate {
 
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+		print(#function)
 		do {
 			let requestType = walletConnectQueue[indexPath.row].0
 			let request: Request = walletConnectQueue[indexPath.row].1
 
 			if (requestType == Notification.Name.provenanceSendTransaction) {
-				let (type, message) = try decodeMessage(request: request)
+				onMainThread {
+					self.activityIndicator.startAnimating()
+				}
+				
+				let (type, message) = try request.decodeMessage()
 
-				let signingKey = try walletService().defaultPrivateKey()
-				let gasEstimate = try walletService().estimateTx(signingKey: signingKey, message: message)
+				let signingKey = try self.walletService().defaultPrivateKey()
+				let gasEstimate = try self.walletService().estimateTx(signingKey: signingKey, message: message)
 				let displayMessage = try message.jsonString()
 				var gas = (Double(gasEstimate.gasUsed) * 1.3)
 				gas.round(.up)
@@ -179,15 +294,15 @@ class WalletViewController: UIViewController,
 
 				askToSend(request: request, message: message, description: try request.description(),
 				          displayMessage: displayMessage,
-				          gasFee: gasFee) {
-					try self.walletService()
-					        .broadcastTx(signingKey: signingKey, message: message, gasEstimate: gasEstimate)
-				}
+				          gasFee: gasFee, send: { [self]
+					return try self.walletService()
+					               .broadcastTx(signingKey: signingKey, message: message, gasEstimate: gasEstimate)
+				})
 			} else {
 				let description = try request.description()
 				let messageBytes = try request.message()
 				let decodedMessage = String(data: Data(hex: messageBytes), encoding: .utf8) ?? messageBytes
-				
+
 				askToSign(request: request, description: description, message: decodedMessage) {
 					let messageData = Data(hex: messageBytes).sha256()
 					return try self.walletService().sign(messageData: messageData).toHexString()
@@ -199,12 +314,60 @@ class WalletViewController: UIViewController,
 				Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
 			}
 		}
+	}
+}
 
+// MARK: - UICollectionViewDelegateFlowLayout
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+extension WalletViewController: UICollectionViewDelegateFlowLayout {
 
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+		let height = (collectionView.frame.size.height-20)
+		return CGSize(width: 70, height: height)
 	}
 
-// MARK: - WalletConnect
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
 
+		return 5
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+
+		return 5
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+
+		return UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+	}
+}
+
+// MARK: - UIScrollViewDelegate
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+extension WalletViewController: UIScrollViewDelegate {
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+
+		if scrollView.tag == 11 {
+			if let navController = navigationController as? NavigationController {
+				if (scrollView.contentOffset.y > sendHashButton.frame.origin.y) {
+					navController.setBackground(color: .systemBackground)
+				} else {
+					navController.setBackground(color: .clear)
+				}
+			}
+		}
+	}
+}
+
+// MARK: - WalletConnect
+extension WalletViewController {
 	private func configureServer() {
 		server = Server(delegate: self)
 		server.register(handler: PersonalSignHandler(server: server, walletService: walletService(),
@@ -270,9 +433,8 @@ class WalletViewController: UIViewController,
 		let sessionData = try! JSONEncoder().encode(session)
 		UserDefaults.standard.set(sessionData, forKey: sessionKey)
 		onMainThread {
-			Utilities.log("Connected to \(session.dAppInfo.peerMeta.name)")
-			self.setButtonState([.walletconnected])
-			self.walletConnectPeerLabel.text = session.dAppInfo.peerMeta.name
+			Utilities.log("Connected to \(self.session.dAppInfo.peerMeta.name)")
+			self.setButtonState([.walletconnected], dAppInfo: self.session.dAppInfo)
 		}
 	}
 
@@ -288,22 +450,31 @@ class WalletViewController: UIViewController,
 		// no-op
 	}
 
-	func serverDisconnect(session: Session) {
+	func serverDisconnect() {
 		do {
-			try server.disconnect(from: session)
+			if(server == nil || self.session == nil) {
+				self.setButtonState([.not_walletconnected])
+				return
+			}
+			try server.disconnect(from: self.session)
+			onMainThread {
+				self.setButtonState([.not_walletconnected])
+			}
 		} catch {
 			Utilities.log(error)
 		}
 	}
+}
 
 // MARK: - Observers
+extension WalletViewController {
 	@objc func handleWalletConnectRequest(notification: Notification) {
 		let notificationModel: NotificationModel = notificationService().unwrap(notification)
 		Utilities.log("WalletViewController got NotificationModel \(notificationModel.name.rawValue)")
 		walletConnectQueue.append((notification.name, notificationModel.object as! Request))
 
 		onMainThread {
-			self.walletConnectTable.reloadData()
+			self.refreshCollectionView()
 		}
 	}
 
@@ -330,9 +501,9 @@ class WalletViewController: UIViewController,
 			return
 		}
 	}
-
+}
 // MARK: - UI Prompting
-
+extension WalletViewController {
 	func askToSign(request: Request, description: String, message: String, sign: @escaping () throws -> String) {
 		let onSign = {
 			do {
@@ -342,9 +513,11 @@ class WalletViewController: UIViewController,
 				Utilities.log(error)
 				self.server.send(.error(error, for: request))
 			}
+			self.removeFromQueue(request: request)
 		}
 		let onCancel = {
 			self.server.send(.reject(request))
+			self.removeFromQueue(request: request)
 		}
 		onMainThread {
 			UIAlertController.showShouldSign(from: self,
@@ -367,6 +540,7 @@ class WalletViewController: UIViewController,
 					try self.server.send(.rawTxResponse(rawTxPair, for: request))
 					DispatchQueue.main.async {
 						Utilities.showAlert(title: "Success", message: "\(txResponse.rawLog)", completionHandler: nil)
+						self.activityIndicator.stopAnimating()
 					}
 
 				} else {
@@ -374,6 +548,7 @@ class WalletViewController: UIViewController,
 					try self.server.send(.rawTxErrorResponse(rawTxPair, for: request))
 					DispatchQueue.main.async {
 						Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)", completionHandler: nil)
+						self.activityIndicator.stopAnimating()
 					}
 
 				}
@@ -382,11 +557,15 @@ class WalletViewController: UIViewController,
 				self.server.send(.error(error, for: request))
 				DispatchQueue.main.async {
 					Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
+					self.activityIndicator.stopAnimating()
 				}
 			}
+			self.removeFromQueue(request: request)
 		}
 		let onCancel = {
 			self.server.send(.reject(request))
+			self.removeFromQueue(request: request)
+			self.activityIndicator.stopAnimating()
 		}
 		onMainThread {
 			UIAlertController.showShouldSend(from: self,
@@ -396,260 +575,18 @@ class WalletViewController: UIViewController,
 			                                 onCancel: onCancel)
 		}
 	}
+}
 
-	private func decodeMessage(request: Request) throws -> (String, Message) {
-		let msgHex = try request.parameter(of: String.self, at: 1)
-		let msgData = Data(hex: msgHex)
-		guard let msgB64 = Data(base64Encoded: msgData) else {
-			throw ProvenanceWalletError(kind: .invalidProvenanceMessage,
-			                            message: "request contains invalid message information", messages: nil,
-			                            underlyingError: nil)
+// MARK: - manage walletConnectQueue
+extension WalletViewController {
+	func removeFromQueue(request: Request) {
+		let index = walletConnectQueue.firstIndex(where: {$0.1 === request })
+		if (index != nil) {
+			walletConnectQueue.remove(at: index!)
+			onMainThread {
+				self.refreshCollectionView()
+			}
 		}
-		let msgAny = try Google_Protobuf_Any(serializedData: msgB64)
-
-		Utilities.log(msgAny.typeURL)
-
-		/*
-		 Cosmos: https://buf.build/cosmos/cosmos-sdk/docs/main
-		 CosmWasm Messages: https://github.com/CosmWasm/wasmd/blob/master/docs/proto/proto-docs.md
-         Provenance Messages: https://github.com/provenance-io/provenance/blob/main/docs/proto-docs.md
-		 */
-		switch msgAny.typeURL {
-
-				/* Cosmos Messages */
-			case "/cosmos.authz.v1beta1.MsgGrant":
-				return (msgAny.typeURL, try Cosmos_Authz_V1beta1_MsgGrant(unpackingAny: msgAny))
-			case "/cosmos.authz.v1beta1.MsgExec":
-				return (msgAny.typeURL, try Cosmos_Authz_V1beta1_MsgExec(unpackingAny: msgAny))
-			case "/cosmos.authz.v1beta1.MsgRevoke":
-				return (msgAny.typeURL, try Cosmos_Authz_V1beta1_MsgRevoke(unpackingAny: msgAny))
-
-			case "/cosmos.bank.v1beta1.MsgMultiSend":
-				return (msgAny.typeURL, try Cosmos_Bank_V1beta1_MsgMultiSend(unpackingAny: msgAny))
-
-			case "/cosmos.crisis.v1beta1.MsgVerifyInvariant":
-				return (msgAny.typeURL, try Cosmos_Crisis_V1beta1_MsgVerifyInvariant(unpackingAny: msgAny))
-
-			case "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress":
-				return (msgAny.typeURL, try Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress(unpackingAny: msgAny))
-			case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-				return (msgAny.typeURL,
-						try Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward(unpackingAny: msgAny))
-			case "/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission":
-				return (msgAny.typeURL,
-						try Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission(unpackingAny: msgAny))
-			case "/cosmos.distribution.v1beta1.MsgFundCommunityPool":
-				return (msgAny.typeURL, try Cosmos_Distribution_V1beta1_MsgFundCommunityPool(unpackingAny: msgAny))
-
-			case "/cosmos.evidence.v1beta1.MsgSubmitEvidence":
-				return (msgAny.typeURL, try Cosmos_Evidence_V1beta1_MsgSubmitEvidence(unpackingAny: msgAny))
-
-			case "/cosmos.feegrant.v1beta1.MsgGrantAllowance":
-				return (msgAny.typeURL, try Cosmos_Feegrant_V1beta1_MsgGrantAllowance(unpackingAny: msgAny))
-			case "/cosmos.feegrant.v1beta1.MsgRevokeAllowance":
-				return (msgAny.typeURL, try Cosmos_Feegrant_V1beta1_MsgRevokeAllowance(unpackingAny: msgAny))
-
-			case "/cosmos.gov.v1beta1.MsgSubmitProposal":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgSubmitProposal(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta1.MsgVote":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgVote(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta1.MsgVoteWeighted":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgVoteWeighted(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta1.MsgDeposit":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgDeposit(unpackingAny: msgAny))
-
-			case "/cosmos.gov.v1beta2.MsgSubmitProposal":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgSubmitProposal(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta2.MsgVote":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgVote(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta2.MsgVoteWeighted":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgVoteWeighted(unpackingAny: msgAny))
-			case "/cosmos.gov.v1beta2.MsgDeposit":
-				return (msgAny.typeURL, try Cosmos_Gov_V1beta1_MsgDeposit(unpackingAny: msgAny))
-
-				/* future
-			case "/cosmos.group.v1beta1.MsgCreateGroupRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgCreateGroupRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupMembersRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupMembersRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupAdminRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupAdminRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupMetadataRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupMetadataRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgCreateGroupAccountRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgCreateGroupAccountRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupAccountAdminRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupAccountAdminRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupAccountDecisionPolicyRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupAccountDecisionPolicyRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgUpdateGroupAccountMetadataRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgUpdateGroupAccountMetadataRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgCreateProposalRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgCreateProposalRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgVoteRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgVoteRequest(unpackingAny: msgAny))
-			case "/cosmos.group.v1beta1.MsgExecRequest":
-				return(msgAny.typeURL, try Cosmos_Group_V1beta1_MsgExecRequest(unpackingAny: msgAny))
-
-			case "/cosmos.nft.v1beta1.MsgSend":
-				return(msgAny.typeURL, try Cosmos_Nft_V1beta1_MsgSend(unpackingAny: msgAny))
-
-
-				 */
-			case "/cosmos.slashing.v1beta1.MsgUnjail":
-				return (msgAny.typeURL, try Cosmos_Slashing_V1beta1_MsgUnjail(unpackingAny: msgAny))
-
-			case "/cosmos.staking.v1beta1.MsgCreateValidator":
-				return (msgAny.typeURL, try Cosmos_Staking_V1beta1_MsgCreateValidator(unpackingAny: msgAny))
-			case "/cosmos.staking.v1beta1.MsgEditValidator":
-				return (msgAny.typeURL, try Cosmos_Staking_V1beta1_MsgEditValidator(unpackingAny: msgAny))
-			case "/cosmos.staking.v1beta1.MsgDelegate":
-				return (msgAny.typeURL, try Cosmos_Staking_V1beta1_MsgDelegate(unpackingAny: msgAny))
-			case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
-				return (msgAny.typeURL, try Cosmos_Staking_V1beta1_MsgBeginRedelegate(unpackingAny: msgAny))
-			case "/cosmos.staking.v1beta1.MsgUndelegate":
-				return (msgAny.typeURL, try Cosmos_Staking_V1beta1_MsgUndelegate(unpackingAny: msgAny))
-
-			case "/cosmos.tx.v1beta1.GetTxsEventRequest":
-				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_GetTxsEventRequest(unpackingAny: msgAny))
-
-			case "/cosmos.tx.v1beta1.BroadcastTxRequest":
-				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_BroadcastTxRequest(unpackingAny: msgAny))
-
-			case "/cosmos.tx.v1beta1.SimulateRequest":
-				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_SimulateRequest(unpackingAny: msgAny))
-
-			case "/cosmos.tx.v1beta1.GetTxRequest":
-				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_GetTxRequest(unpackingAny: msgAny))
-
-			case "/cosmos.vesting.v1beta1.MsgCreateVestingAccount":
-				return (msgAny.typeURL, try Cosmos_Vesting_V1beta1_MsgCreateVestingAccount(unpackingAny: msgAny))
-				/* future
-			case "/cosmos.vesting.v1beta1.MsgCreatePeriodicVestingAccount":
-				return(msgAny.typeURL, try Cosmos_Vesting_V1beta1_MsgCreatePeriodicVestingAccount(unpackingAny: msgAny))
-				 */
-			case "/cosmos.bank.v1beta1.MsgSend":
-				return (msgAny.typeURL, try Cosmos_Bank_V1beta1_MsgSend(unpackingAny: msgAny))
-
-				/* Provenance Messages */
-
-			case "/provenance.attribute.v1.MsgAddAttributeRequest":
-				return (msgAny.typeURL, try Provenance_Attribute_V1_MsgAddAttributeRequest(unpackingAny: msgAny))
-			case "/provenance.attribute.v1.MsgDeleteAttributeRequest":
-				return (msgAny.typeURL, try Provenance_Attribute_V1_MsgDeleteAttributeRequest(unpackingAny: msgAny))
-			case "/provenance.attribute.v1.MsgDeleteDistinctAttributeRequest":
-				return (msgAny.typeURL,
-						try Provenance_Attribute_V1_MsgDeleteDistinctAttributeRequest(unpackingAny: msgAny))
-			case "/provenance.attribute.v1.MsgUpdateAttributeRequest":
-				return (msgAny.typeURL, try Provenance_Attribute_V1_MsgUpdateAttributeRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgActivateRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgActivateRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgAddAccessRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgAddAccessRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgAddMarkerRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgAddMarkerRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgBurnRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgBurnRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgCancelRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgCancelRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgDeleteAccessRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgDeleteAccessRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgDeleteRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgDeleteRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgFinalizeRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgFinalizeRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgMintRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgMintRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgSetDenomMetadataRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgSetDenomMetadataRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgTransferRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgTransferRequest(unpackingAny: msgAny))
-			case "/provenance.marker.v1.MsgWithdrawRequest":
-				return (msgAny.typeURL, try Provenance_Marker_V1_MsgWithdrawRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgAddContractSpecToScopeSpecRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgAddContractSpecToScopeSpecRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgAddScopeDataAccessRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgAddScopeDataAccessRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgAddScopeOwnerRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgAddScopeOwnerRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgBindOSLocatorRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgBindOSLocatorRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteContractSpecFromScopeSpecRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgDeleteContractSpecFromScopeSpecRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteContractSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgDeleteContractSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteOSLocatorRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgDeleteOSLocatorRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteRecordRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgDeleteRecordRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteRecordSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgDeleteRecordSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteScopeDataAccessRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgDeleteScopeDataAccessRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteScopeOwnerRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgDeleteScopeOwnerRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteScopeRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgDeleteScopeRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgDeleteScopeSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgDeleteScopeSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgModifyOSLocatorRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgModifyOSLocatorRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgP8eMemorializeContractRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgP8eMemorializeContractRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteContractSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgWriteContractSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteP8eContractSpecRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgWriteP8eContractSpecRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteRecordRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgWriteRecordRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteRecordSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgWriteRecordSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteScopeRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgWriteScopeRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteScopeSpecificationRequest":
-				return (msgAny.typeURL,
-						try Provenance_Metadata_V1_MsgWriteScopeSpecificationRequest(unpackingAny: msgAny))
-			case "/provenance.metadata.v1.MsgWriteSessionRequest":
-				return (msgAny.typeURL, try Provenance_Metadata_V1_MsgWriteSessionRequest(unpackingAny: msgAny))
-			case "/provenance.name.v1.MsgBindNameRequest":
-				return (msgAny.typeURL, try Provenance_Name_V1_MsgBindNameRequest(unpackingAny: msgAny))
-			case "/provenance.name.v1.MsgDeleteNameRequest":
-				return (msgAny.typeURL, try Provenance_Name_V1_MsgDeleteNameRequest(unpackingAny: msgAny))
-
-				/* CosmWasm Messages */
-
-			case "/cosmwasm.wasm.v1.MsgClearAdmin":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgClearAdmin(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgExecuteContract":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgExecuteContract(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgInstantiateContract":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgInstantiateContract(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgMigrateContract":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgMigrateContract(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgStoreCode":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgStoreCode(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgUpdateAdmin":
-				return (msgAny.typeURL, try Cosmwasm_Wasm_V1_MsgUpdateAdmin(unpackingAny: msgAny))
-			case "/cosmwasm.wasm.v1.MsgUpdateAdmin":
-				return (msgAny.typeURL, try Cosmos_Tx_V1beta1_TxBody(unpackingAny: msgAny))
-			default:
-				throw ProvenanceWalletError(kind: .unsupportedProvenanceMessage,
-				                            message: "wallet does not support \(msgAny.typeURL)",
-				                            messages: nil,
-				                            underlyingError: nil)
-		}
-
-
 	}
-
 }
 

@@ -55,9 +55,9 @@
 	<key>ProvenanceAPIEndpoint</key>
 	<string>http://rpc-0.test.provenance.io:26657</string>
 	<key>ProvenanceGRPCEndpoint</key>
-	<string>node.test.dlob.io</string>
+	<string>grpc-pn-zz18godox4npnh6i.test.nodes.figure.tech</string>
 	<key>ProvenanceGRPCPort</key>
-	<string>9090</string>
+	<string>443</string>
 	<key>ProvenanceMainnet</key>
 	<false/>
 	<key>ProvenanceRPCEndpoint</key>
@@ -75,8 +75,6 @@
 					<string>Default Configuration</string>
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
 				</dict>
 			</array>
 		</dict>
@@ -89,8 +87,6 @@
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

@@ -12,7 +12,9 @@ target 'ProvenanceWalletConnect' do
   # pod 'ProvWallet' , :path=> '~/git/provwallet-swift'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'WalletConnectSwift'
-  
+  pod 'IQKeyboardManagerSwift'
+  pod 'Charts'
+
   target 'ProvenanceWalletConnectTests' do
     inherit! :search_paths
     # Pods for testing

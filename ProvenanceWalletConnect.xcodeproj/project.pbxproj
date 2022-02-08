@@ -65,6 +65,7 @@
 		CF1EBAC726DC350F00758AAE /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1EBAC626DC350F00758AAE /* WalletViewController.swift */; };
 		CF1EBACA26DC376B00758AAE /* UIDefaultButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1EBAC926DC376B00758AAE /* UIDefaultButton.swift */; };
 		CF1EBACC26DC5B0E00758AAE /* walletconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = CF1EBACB26DC5B0E00758AAE /* walletconnect.png */; };
+		CF7D8DBB27B2F8D8007D35BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7D8DBA27B2F8D8007D35BA /* Assets.xcassets */; };
 		CF83EC0126D99E7D00BD5CC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */; };
 		CF83EC0326D99E7D00BD5CC8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */; };
 		CF83EC1026D99E7F00BD5CC8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF83EC0E26D99E7F00BD5CC8 /* LaunchScreen.storyboard */; };
@@ -80,7 +81,6 @@
 		CF89424427B1C62200596596 /* hash.png in Resources */ = {isa = PBXBuildFile; fileRef = CF89424227B1C62200596596 /* hash.png */; };
 		CF89424527B1C62200596596 /* provenance-p.png in Resources */ = {isa = PBXBuildFile; fileRef = CF89424327B1C62200596596 /* provenance-p.png */; };
 		CF89424727B1D23E00596596 /* ManageWalletView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CF89424627B1D23E00596596 /* ManageWalletView.xib */; };
-		CFE46EEF2733126C001DFA30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFE46EEE2733126C001DFA30 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +136,7 @@
 		CF1EBAC626DC350F00758AAE /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
 		CF1EBAC926DC376B00758AAE /* UIDefaultButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDefaultButton.swift; sourceTree = "<group>"; };
 		CF1EBACB26DC5B0E00758AAE /* walletconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = walletconnect.png; sourceTree = "<group>"; };
+		CF7D8DBA27B2F8D8007D35BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CF83EBFD26D99E7D00BD5CC8 /* ProvenanceWalletConnect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProvenanceWalletConnect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -158,7 +159,6 @@
 		CF89424227B1C62200596596 /* hash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hash.png; sourceTree = "<group>"; };
 		CF89424327B1C62200596596 /* provenance-p.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "provenance-p.png"; sourceTree = "<group>"; };
 		CF89424627B1D23E00596596 /* ManageWalletView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageWalletView.xib; sourceTree = "<group>"; };
-		CFE46EEE2733126C001DFA30 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../Downloads/AppIcons/Assets.xcassets; sourceTree = "<group>"; };
 		F15FDE6FC0107C0929409627 /* Pods-ProvenanceWalletConnect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect/Pods-ProvenanceWalletConnect.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -338,7 +338,7 @@
 				CF83EC3A26DAD04E00BD5CC8 /* ProvenanceWalletConnect.entitlements */,
 				CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */,
 				CF83EC0226D99E7D00BD5CC8 /* SceneDelegate.swift */,
-				CFE46EEE2733126C001DFA30 /* Assets.xcassets */,
+				CF7D8DBA27B2F8D8007D35BA /* Assets.xcassets */,
 				CF83EC0E26D99E7F00BD5CC8 /* LaunchScreen.storyboard */,
 				CF83EC1126D99E7F00BD5CC8 /* Info.plist */,
 				9F1115274E9CCCF053394654 /* Common */,
@@ -494,11 +494,11 @@
 			files = (
 				CF83EC1026D99E7F00BD5CC8 /* LaunchScreen.storyboard in Resources */,
 				CF83EC3526D9A80900BD5CC8 /* provenance.svg in Resources */,
+				CF7D8DBB27B2F8D8007D35BA /* Assets.xcassets in Resources */,
 				CF89424427B1C62200596596 /* hash.png in Resources */,
 				CF83EC3726D9A94400BD5CC8 /* provenance.png in Resources */,
 				CF1EBACC26DC5B0E00758AAE /* walletconnect.png in Resources */,
 				CF89424027B19BCC00596596 /* WalletView.xib in Resources */,
-				CFE46EEF2733126C001DFA30 /* Assets.xcassets in Resources */,
 				CF89424527B1C62200596596 /* provenance-p.png in Resources */,
 				CF89423F27B19BCC00596596 /* WalletViewCell.xib in Resources */,
 				CF89424727B1D23E00596596 /* ManageWalletView.xib in Resources */,

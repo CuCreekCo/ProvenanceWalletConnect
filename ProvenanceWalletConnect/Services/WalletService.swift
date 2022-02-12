@@ -259,33 +259,56 @@ class WalletService: NSObject {
 		}
 	}
 
-	func estimateTx(signingKey: PrivateKey, message: Message) throws -> Cosmos_Base_Abci_V1beta1_GasInfo {
-
-		// Query the blockchain account in a blocking wait
-		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
-
-		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
-
-		let txMsg = try Google_Protobuf_Any.from(message: message)
-
-		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: [txMsg])
-
-		return try estPromise.wait()
+	func nhashToHash(_ nhash: UInt64) -> Double {
+		Double(nhash) / 1000000000
 	}
 
-	func estimateTx(signingKey: PrivateKey, message: Message, completion: @escaping (Cosmos_Base_Abci_V1beta1_GasInfo?, Error?) -> Void) throws {
+	func nhashToHash(_ nhash: String) -> Double {
+		(Double(nhash) ?? 0.0) / 1000000000
+	}
+
+	private func adjustGas(_ gasInfo: Cosmos_Base_Abci_V1beta1_GasInfo) -> GasEstimate {
+		var gasFactor: Double = Double(gasInfo.gasUsed) * 1.3
+		gasFactor.round(.up)
+		return GasEstimate(
+				gasInfo: gasInfo,
+				gas: UInt64(gasFactor),
+				gasFee: nhashToHash(UInt64(gasFactor) * Tx.gasPrice),
+			    denom: "Hash")
+	}
+
+	func estimateTx(signingKey: PrivateKey, message: [Message]) throws -> GasEstimate {
 
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
 
 		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
 
-		let txMsg = try Google_Protobuf_Any.from(message: message)
+		let txMsgs = try message.map { message -> Google_Protobuf_Any in
+			try Google_Protobuf_Any.from(message: message)
+		}
 
-		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: [txMsg])
+		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: txMsgs)
 
-		estPromise.whenSuccess({ info in
-			completion(info, nil)
+		let gasInfo = try estPromise.wait()
+		return adjustGas(gasInfo)
+	}
+
+	func estimateTx(signingKey: PrivateKey, message: [Message], completion: @escaping (GasEstimate?, Error?) -> Void) throws {
+
+		// Query the blockchain account in a blocking wait
+		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
+
+		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
+
+		let txMsgs = try message.map { message -> Google_Protobuf_Any in
+			try Google_Protobuf_Any.from(message: message)
+		}
+
+		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: txMsgs)
+
+		estPromise.whenSuccess({ [self] info in
+			completion(adjustGas(info), nil)
 		})
 
 		estPromise.whenFailure { error in

@@ -8,11 +8,8 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var cellMessageType: UITableViewCell!
-    @IBOutlet weak var cellConnectedDapp: UITableViewCell!
 
-    private var sections = ["WalletConnect", "Message", "Transaction"]
-    private var transactions = ["", "", "", "", ""]
+    private var sections = ["WalletConnect", "Gas"]
 
     var walletConnectRequest: (Notification.Name, Request)!
     var completion: () -> Void = {
@@ -22,9 +19,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
     private var request: Request!
     private var messageType: String!
     private var message: Message!
-    private var gas: UInt64?
-    private var gasFee: UInt64?
-    private var gasInfo: Cosmos_Base_Abci_V1beta1_GasInfo?
+    private var gasEstimate: GasEstimate?
     private var messageKVArray: [(String, String)] = []
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -32,21 +27,18 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
         super.viewDidLoad()
         title = "Confirm Transaction"
+
+        tableView.register(UINib(nibName: "ConnectedDappCell", bundle: nil), forCellReuseIdentifier: "cellConnectedDapp")
+
         navigationController?.navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.prefersLargeTitles = false
-
-        (cellConnectedDapp.contentView.viewWithTag(1) as! UILabel).text = walletConnectService().dAppName()
-        (cellConnectedDapp.contentView.viewWithTag(2) as! UILabel).text = walletConnectService().dAppUrl()
 
         requestType = walletConnectRequest.0
         request = walletConnectRequest.1
 
         do {
             (messageType, message) = try request.decodeMessage()
-
             messageKVArray = parseMessageFields()
-
-            (cellMessageType.contentView.viewWithTag(22) as! UILabel).text = messageType.description
         } catch {
             onMainThread {
                 //TODO make me a slide up modal and pop view on confirm
@@ -78,9 +70,9 @@ class ConfirmBroadcastTxViewController: UIViewController {
     @IBAction func actionSend(_ sender: UIButton) {
 
         print(#function)
-        if (gasInfo != nil) {
+        if (gasEstimate != nil) {
             do {
-                let rawTxPair = try walletService().broadcastTx(signingKey: walletService().defaultPrivateKey(), message: message, gasEstimate: gasInfo!)
+                let rawTxPair = try walletService().broadcastTx(signingKey: walletService().defaultPrivateKey(), message: message, gasEstimate: gasEstimate!.gasInfo)
                 let txResponse = rawTxPair.txResponse
 
                 //TODO punch up response modal here
@@ -99,7 +91,6 @@ class ConfirmBroadcastTxViewController: UIViewController {
                     Utilities.log(txResponse.rawLog)
                     try walletConnectService().send(.rawTxErrorResponse(rawTxPair, for: request))
                     onMainThread {
-                        [self]
                         self.activityIndicator.stopAnimating()
                         Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)") {
                             self.dismiss(animated: true)
@@ -110,7 +101,6 @@ class ConfirmBroadcastTxViewController: UIViewController {
                 Utilities.log(error)
                 //TODO make me a slide up modal and pop view on confirm
                 Utilities.showAlert(title: "Error", message: "\(error)") {
-                    [self]
                     self.navigationController?.popToRootViewController(animated: true)
                 }
             }
@@ -122,9 +112,15 @@ class ConfirmBroadcastTxViewController: UIViewController {
     }
 
     @IBAction func actionReject(_ sender: Any) {
-        walletConnectService().send(.reject(request))
-        completion()
-        navigationController?.popToRootViewController(animated: true)
+        Utilities.showConfirm(title: "Reject Request?",
+                message: "Press Continue to reject \(request.description() ?? "") from \(walletConnectService().dAppName() ?? "").",
+                continueHandler: {
+                    [self]
+                    self.walletConnectService().send(.reject(self.request))
+                    self.completion()
+                    self.navigationController?.popToRootViewController(animated: true)
+                },
+                cancelHandler: nil)
     }
 
     // MARK: - Blockchain
@@ -132,7 +128,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
     func calculateGasFee() throws {
         let signingKey = try walletService().defaultPrivateKey()
 
-        try walletService().estimateTx(signingKey: signingKey, message: message) { [self] info, error in
+        try walletService().estimateTx(signingKey: signingKey, message: [message]) { [self] gasEstimate, error in
             if (error != nil) {
                 onMainThread {
                     [self]
@@ -140,17 +136,10 @@ class ConfirmBroadcastTxViewController: UIViewController {
                     Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
                 }
             } else {
-                gasInfo = info!
-                var gasFactor: Double = Double(gasInfo!.gasUsed) * 1.3
-                gasFactor.round(.up)
-                gas = UInt64(gasFactor)
-                gasFee = gas! * Tx.gasPrice
+                self.gasEstimate = gasEstimate
                 onMainThread {
                     [self]
-                    (tableView.cellForRow(at: IndexPath(row: 0, section: 2))?.viewWithTag(1) as? UILabel)?.text =
-                            "\(gas)"
-                    (tableView.cellForRow(at: IndexPath(row: 1, section: 2))?.viewWithTag(1) as? UILabel)?.text =
-                            "\(gasFee) nhash"
+                    tableView.reloadData()
                     activityIndicator.stopAnimating()
                 }
             }
@@ -167,20 +156,19 @@ class ConfirmBroadcastTxViewController: UIViewController {
     }
 
     func messageFieldCount() -> Int {
-        //2 for the gas
-        messageKVArray.count + 2
+        messageKVArray.count
     }
 
-    private func flatJson(_ json: JSON, label: String?, array: inout [(String, String)]) {
+    private func flatJson(_ json: JSON, label: String = "", array: inout [(String, String)]) {
         for (k, v) in json {
             if (v.type == .dictionary) {
-                flatJson(v, label: "\(label ?? "")-\(k)", array: &array)
+                flatJson(v, label: k.camelCaseToWords().capitalized, array: &array)
             } else if (v.type == .array) {
                 for a in v.arrayValue {
-                    flatJson(a, label: "\(label ?? "")-\(k)", array: &array)
+                    flatJson(a, label: k.camelCaseToWords().capitalized, array: &array)
                 }
             } else {
-                array.append(("\(label) \(k)", v.stringValue))
+                array.append((k.camelCaseToWords().capitalized, v.stringValue))
             }
         }
     }
@@ -193,7 +181,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
             Utilities.log(jsonString)
 
             var kvArr: [(String, String)] = []
-            flatJson(json, label: nil, array: &kvArr)
+            flatJson(json, array: &kvArr)
 
             return kvArr
         } catch {
@@ -218,7 +206,7 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
             return 1
         }
         if (section == 1) {
-            return 1
+            return 2
         }
         if (section == 2) {
             return messageFieldCount()
@@ -230,10 +218,11 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if (indexPath.section == 0) && (indexPath.row == 0) {
-            return cellConnectedDapp
-        } else if (indexPath.section == 1) && (indexPath.row == 0) {
-            return cellMessageType
-        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cellConnectedDapp")!
+            (cell.contentView.viewWithTag(1) as! UILabel).text = walletConnectService().dAppName()
+            (cell.contentView.viewWithTag(2) as! UILabel).text = walletConnectService().dAppUrl()
+            return cell
+        } else if (indexPath.section == 1) {
             var cell = tableView.dequeueReusableCell(withIdentifier: "cellTransactionDetail")
             if cell == nil {
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellTransactionDetail")
@@ -243,15 +232,31 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
 
             if (indexPath.row == 0) { // let's call it the gas row
                 label.text = "Gas Estimate"
-                value.text = "Calculating..."
+                if (gasEstimate != nil) {
+                    value.text = "\(gasEstimate!.gas ?? 0)"
+                } else {
+                    value.text = "Calculating..."
+                }
             } else if (indexPath.row == 1) { // let's call it the gas row
                 label.text = "Gas Fees"
-                value.text = "Calculating..."
-            } else {
-                let kv = messageKVArray[indexPath.row - 2]
-                label.text = kv.0
-                value.text = kv.1
+                if (gasEstimate != nil) {
+                    value.text = "\(gasEstimate!.gasFee ?? 0.0) \(gasEstimate!.denom ?? "Hash")"
+                } else {
+                    value.text = "Calculating..."
+                }
             }
+            return cell!
+        } else {
+            var cell = tableView.dequeueReusableCell(withIdentifier: "cellTransactionDetail")
+            if cell == nil {
+                cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellTransactionDetail")
+            }
+            let label = cell!.textLabel!
+            let value = cell!.detailTextLabel!
+
+            let kv = messageKVArray[indexPath.row]
+            label.text = kv.0
+            value.text = kv.1
             return cell!
         }
 
@@ -265,7 +270,13 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
     //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 
-        sections[section]
+        if (section == 0) {
+            return "WalletConnect"
+        }
+        if (section == 1) {
+            return "Gas"
+        }
+        return messageType.substringAfterLast(".").camelCaseToWords()
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
@@ -278,7 +289,6 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-
         0.01
     }
 
@@ -286,9 +296,8 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         if (indexPath.section == 0) {
-            //dApp
-        } else if (indexPath.section == 1) {
             if (indexPath.row == 0) {
+                //TODO make this a nice modal
                 onMainThread {
                     Utilities.showAlert(title: "Data", message: self.messageJsonString(), completionHandler: nil)
                 }

@@ -13,8 +13,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConfirmBroadcastTxViewController" customModule="ProvenanceWalletConnect" customModuleProvider="target">
             <connections>
                 <outlet property="activityIndicator" destination="PYV-Tw-F9d" id="w3u-jY-80a"/>
-                <outlet property="cellConnectedDapp" destination="WXt-dh-YHR" id="HWd-dB-unZ"/>
-                <outlet property="cellMessageType" destination="lXt-2a-TmR" id="KMf-df-KwW"/>
                 <outlet property="tableView" destination="P47-Od-kX8" id="1Kd-A2-dkJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -54,7 +52,7 @@
                 </activityIndicatorView>
                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKN-y6-3Xg">
                     <rect key="frame" x="15" y="498" width="290" height="50"/>
-                    <color key="backgroundColor" name="Theme"/>
+                    <color key="backgroundColor" systemColor="secondarySystemFillColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="2WR-Sr-2Rc"/>
                     </constraints>
@@ -90,64 +88,14 @@
             </constraints>
             <point key="canvasLocation" x="131.25" y="138.38028169014083"/>
         </view>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Aj2-iX-ggq" style="IBUITableViewCellStyleDefault" id="lXt-2a-TmR">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-            <autoresizingMask key="autoresizingMask"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lXt-2a-TmR" id="C8q-OW-Wwn">
-                <rect key="frame" x="0.0" y="0.0" width="295.5" height="44"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <label opaque="NO" multipleTouchEnabled="YES" tag="22" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Message Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Aj2-iX-ggq">
-                        <rect key="frame" x="16" y="0.0" width="271.5" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                </subviews>
-            </tableViewCellContentView>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-            <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-            <point key="canvasLocation" x="815.625" y="-138.38028169014083"/>
-        </tableViewCell>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="HRI-ci-acM" detailTextLabel="NUZ-gx-qe0" imageView="qvS-eo-aep" rowHeight="66" style="IBUITableViewCellStyleSubtitle" id="WXt-dh-YHR">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="66"/>
-            <autoresizingMask key="autoresizingMask"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WXt-dh-YHR" id="jhc-hi-VKS">
-                <rect key="frame" x="0.0" y="0.0" width="295.5" height="66"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <label opaque="NO" multipleTouchEnabled="YES" tag="1" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="dApp Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HRI-ci-acM" userLabel="wcDappName">
-                        <rect key="frame" x="51.75" y="17" width="66.5" height="14.5"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="star.circle.fill" catalog="system" id="qvS-eo-aep">
-                        <rect key="frame" x="15.75" y="22" width="21" height="21"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </imageView>
-                    <label opaque="NO" multipleTouchEnabled="YES" tag="2" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="domain name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NUZ-gx-qe0">
-                        <rect key="frame" x="51.75" y="33.5" width="76" height="14.5"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                </subviews>
-            </tableViewCellContentView>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-            <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-            <point key="canvasLocation" x="815.625" y="-45.422535211267608"/>
-        </tableViewCell>
     </objects>
     <resources>
-        <image name="star.circle.fill" catalog="system" width="128" height="121"/>
         <namedColor name="Theme">
             <color red="0.078000001609325409" green="0.23899999260902405" blue="0.34900000691413879" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="secondarySystemFillColor">
+            <color red="0.47058823529411764" green="0.47058823529411764" blue="0.50196078431372548" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

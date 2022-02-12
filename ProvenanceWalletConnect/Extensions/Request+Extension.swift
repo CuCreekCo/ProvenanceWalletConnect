@@ -9,8 +9,13 @@ import SwiftProtobuf
 import ProvWallet
 
 extension Request {
-	func message() throws -> String {
-		try self.parameter(of: String.self, at: 1)
+	func message() -> String {
+		do {
+			return try self.parameter(of: String.self, at: 1)
+		} catch {
+			Utilities.log(error)
+			return "undefined"
+		}
 	}
 	func metadata() throws -> String {
 		try self.parameter(of: String.self, at: 0)
@@ -18,8 +23,13 @@ extension Request {
 	func metadataJSON() throws -> JSON {
 		JSON.init(parseJSON: try metadata());
 	}
-	func description() throws -> String {
-		try metadataJSON()["description"].stringValue
+	func description() -> String {
+		do {
+			return try metadataJSON()["description"].stringValue
+		} catch {
+			Utilities.log(error)
+			return "undefined"
+		}
 	}
 	func address() throws -> String {
 		try metadataJSON()["address"].stringValue

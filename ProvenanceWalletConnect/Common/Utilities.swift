@@ -63,4 +63,23 @@ public class Utilities {
 		alertController.addAction(okAction)
 		UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
 	}
+
+	static func showConfirm(title: String, message: String, continueHandler: @escaping () -> Void, cancelHandler: (() -> Void)?) {
+		let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+
+		let continueAction = UIAlertAction(title: "Continue", style: .default) { action in
+			continueHandler()
+		}
+
+		let cancelAction = UIAlertAction(title: "Cancel", style: .default) { action in
+			if let handler = cancelHandler {
+				handler()
+			}
+		}
+
+		alertController.addAction(cancelAction)
+		alertController.addAction(continueAction)
+		UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+	}
+
 }

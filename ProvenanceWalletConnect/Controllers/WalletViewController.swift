@@ -233,7 +233,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate {
 
 			let coin =  try walletService().queryBank()
 			onMainThread {
-				self.labelBalance.text = "\(Double(coin.amount) ?? 0.0 / 1000000000)"
+				self.labelBalance.text = "\(self.walletService().nhashToHash(coin.amount))"
 			}
 		} catch {
 			Utilities.log(error)

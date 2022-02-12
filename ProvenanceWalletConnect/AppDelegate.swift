@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     public var channel: ClientConnection!
     public var group = PlatformSupport.makeEventLoopGroup(loopCount: 1)
     public var walletService: WalletService!
+    public var walletConnectService: WalletConnectService!
 
     let notificationService = NotificationService()
 
@@ -32,6 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                            port: Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090)
 
         walletService = WalletService(persistentContainer: persistentContainer, channel: channel)
+
+        walletConnectService = WalletConnectService(walletService: walletService, notificationService: notificationService)
 
         IQKeyboardManager.shared.enable = true
 

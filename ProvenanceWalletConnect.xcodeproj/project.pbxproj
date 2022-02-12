@@ -10,6 +10,8 @@
 		298E5D96E374A79F1B761114 /* Pods_ProvenanceWalletConnect_ProvenanceWalletConnectUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A636691DFA8249B9A7A42E /* Pods_ProvenanceWalletConnect_ProvenanceWalletConnectUITests.framework */; };
 		31C88AB240DE6A490E68D065 /* Pods_ProvenanceWalletConnectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CA210538E1107DB37AAAFA /* Pods_ProvenanceWalletConnectTests.framework */; };
 		3C383290A7F0776EA5C959D2 /* Pods_ProvenanceWalletConnect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77797BC4F177949309075B7D /* Pods_ProvenanceWalletConnect.framework */; };
+		69FB898B27B30E54000FEEA1 /* ProvenanceResponseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69FB898927B30E54000FEEA1 /* ProvenanceResponseViewController.swift */; };
+		69FB898C27B30E54000FEEA1 /* ProvenanceResponseView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69FB898A27B30E54000FEEA1 /* ProvenanceResponseView.xib */; };
 		9F11101CB57C9DD499C9ECBD /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F11128ED6A6098321EC946E /* ErrorHandler.swift */; };
 		9F1110926FF829F67CA59B27 /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111371D0214BBC1076B953 /* UIAlertController+Extension.swift */; };
 		9F1110AD35FD2170A1FF6AC0 /* Request+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1116A9E582FD631373377C /* Request+Extension.swift */; };
@@ -17,15 +19,12 @@
 		9F11115138566BC8449E2CB0 /* CipherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111255539088A3A1E07624 /* CipherService.swift */; };
 		9F11115E9A2EEB423A66ED42 /* WalletConnectHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1114D8119F57014D3CE45F /* WalletConnectHandlers.swift */; };
 		9F111166EE05AB59CEE6B583 /* ScannerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1118E9ED2D5682C1BC76DD /* ScannerViewControllerDelegate.swift */; };
-		9F11116CFB4D0C9807E2ACC9 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1113579F9B7B44FAFEDD8B /* UITextField+Extension.swift */; };
 		9F111177E08838E993D10443 /* CipherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111255539088A3A1E07624 /* CipherService.swift */; };
-		9F11124A3EA1F472FA75E0CC /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111685DBAE3A98763B640F /* AppColor.swift */; };
 		9F1112A05011F8C167BA7208 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1117A75CE5E6CA99F1735E /* Utilities.swift */; };
 		9F1112D4FB6F587B4D59E036 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1110C7DB48A5963DB0E7EC /* RootViewController.swift */; };
 		9F1113A3795FADE706D199A5 /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111371D0214BBC1076B953 /* UIAlertController+Extension.swift */; };
 		9F1113AAFDFC1492AF54E6CB /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111FCB09DF51E6EF6DB80B /* UIViewController+Extension.swift */; };
 		9F111420951464C65577EA4A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111D5C60AAA23BFBF634B1 /* String.swift */; };
-		9F11143BB6F0B4037F79B14A /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F11192319601FF1015197DD /* UIView+Extension.swift */; };
 		9F11144A9381E29B4E74FB08 /* JSON+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1110E4EF15F73E300CBB57 /* JSON+Extension.swift */; };
 		9F1114A9839DB8D9C7659E5B /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111371D0214BBC1076B953 /* UIAlertController+Extension.swift */; };
 		9F1114E4A03012785D1602B5 /* ManageWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111CBD27860BAAB2C1B5A7 /* ManageWalletViewController.swift */; };
@@ -52,18 +51,15 @@
 		9F111DB18FF371449D806EC7 /* ScannerViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1118E9ED2D5682C1BC76DD /* ScannerViewControllerDelegate.swift */; };
 		9F111DC7B3F65B94F997D88C /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1110145154436971F15084 /* Data+Extension.swift */; };
 		9F111E176D48B627A111ACFD /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111D5C60AAA23BFBF634B1 /* String.swift */; };
-		9F111E40D705418E25A475FA /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111CD9E8C6999C667858C1 /* UIImageView+Extension.swift */; };
 		9F111F033D3C956FFC42508C /* CipherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111255539088A3A1E07624 /* CipherService.swift */; };
 		9F111F1DF77FE48EE9079D27 /* ManageWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111CBD27860BAAB2C1B5A7 /* ManageWalletViewController.swift */; };
 		9F111F2A33A2F8407FAD3A09 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1117A75CE5E6CA99F1735E /* Utilities.swift */; };
 		9F111F2A7319F5F3A919DF86 /* Response+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111178EDC7B54C0B5BBB80 /* Response+Extension.swift */; };
 		9F111F2F2D6AA2DDCD2B8554 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1110145154436971F15084 /* Data+Extension.swift */; };
-		9F111F6EBB051F57AD642434 /* NavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F11101F888F44C4FA8564E1 /* NavController.swift */; };
 		9F111F747B5A713420F93D83 /* ManageWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F111CBD27860BAAB2C1B5A7 /* ManageWalletViewController.swift */; };
 		9F111F9BC240396AEBBB6B1D /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F11128ED6A6098321EC946E /* ErrorHandler.swift */; };
 		9F111FA373B0A4EE13D80118 /* WalletConnectHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1114D8119F57014D3CE45F /* WalletConnectHandlers.swift */; };
 		CF1EBAC726DC350F00758AAE /* WalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1EBAC626DC350F00758AAE /* WalletViewController.swift */; };
-		CF1EBACA26DC376B00758AAE /* UIDefaultButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1EBAC926DC376B00758AAE /* UIDefaultButton.swift */; };
 		CF1EBACC26DC5B0E00758AAE /* walletconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = CF1EBACB26DC5B0E00758AAE /* walletconnect.png */; };
 		CF7D8DBB27B2F8D8007D35BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF7D8DBA27B2F8D8007D35BA /* Assets.xcassets */; };
 		CF83EC0126D99E7D00BD5CC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF83EC0026D99E7D00BD5CC8 /* AppDelegate.swift */; };
@@ -81,6 +77,15 @@
 		CF89424427B1C62200596596 /* hash.png in Resources */ = {isa = PBXBuildFile; fileRef = CF89424227B1C62200596596 /* hash.png */; };
 		CF89424527B1C62200596596 /* provenance-p.png in Resources */ = {isa = PBXBuildFile; fileRef = CF89424327B1C62200596596 /* provenance-p.png */; };
 		CF89424727B1D23E00596596 /* ManageWalletView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CF89424627B1D23E00596596 /* ManageWalletView.xib */; };
+		D3A0D8F118FA0D3550687A11 /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */; };
+		D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */; };
+		D3A258B02AC7DAC048802AA4 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A103B58A6C17B3AE2983E4 /* UITextField+Extension.swift */; };
+		D3A53780CE1B9391396A2163 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A144514AF6B2B3820F21AA /* UIImageView+Extension.swift */; };
+		D3A834737781E6CB258250B0 /* ConfirmBroadcastTxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */; };
+		D3A9400557A6CA30DFB30A7D /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A261432EBABC99B38BDAFD /* UIView+Extension.swift */; };
+		D3AB1ADB3BBB17025460FFC8 /* LabelValueDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */; };
+		D3ADE30DA391E193062034FD /* WalletConnectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A23B4D35793B0F366F1DE5 /* WalletConnectService.swift */; };
+		D3AE4507489C169CF45D26B3 /* NavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A36A6B67FEA1B7FE56A9F4 /* NavController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,36 +110,32 @@
 		1E0EA25CDAA441B5CE115158 /* Pods-ProvenanceWalletConnect-ProvenanceWalletConnectUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect-ProvenanceWalletConnectUITests.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect-ProvenanceWalletConnectUITests/Pods-ProvenanceWalletConnect-ProvenanceWalletConnectUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		37DD0574EE29EE70668B7912 /* Pods-ProvenanceWalletConnect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect.release.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect/Pods-ProvenanceWalletConnect.release.xcconfig"; sourceTree = "<group>"; };
 		62B4438827C23B965EA90EC7 /* Pods-ProvenanceWalletConnectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnectTests.release.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnectTests/Pods-ProvenanceWalletConnectTests.release.xcconfig"; sourceTree = "<group>"; };
+		69FB898927B30E54000FEEA1 /* ProvenanceResponseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProvenanceResponseViewController.swift; sourceTree = "<group>"; };
+		69FB898A27B30E54000FEEA1 /* ProvenanceResponseView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProvenanceResponseView.xib; sourceTree = "<group>"; };
 		77797BC4F177949309075B7D /* Pods_ProvenanceWalletConnect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProvenanceWalletConnect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86A636691DFA8249B9A7A42E /* Pods_ProvenanceWalletConnect_ProvenanceWalletConnectUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProvenanceWalletConnect_ProvenanceWalletConnectUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F1110145154436971F15084 /* Data+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
-		9F11101F888F44C4FA8564E1 /* NavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavController.swift; sourceTree = "<group>"; };
 		9F1110C7DB48A5963DB0E7EC /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		9F1110E4EF15F73E300CBB57 /* JSON+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSON+Extension.swift"; sourceTree = "<group>"; };
 		9F111178EDC7B54C0B5BBB80 /* Response+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Response+Extension.swift"; sourceTree = "<group>"; };
 		9F111255539088A3A1E07624 /* CipherService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CipherService.swift; sourceTree = "<group>"; };
 		9F11128ED6A6098321EC946E /* ErrorHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		9F111347AE3D11F878829029 /* QRCaptureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QRCaptureViewController.swift; sourceTree = "<group>"; };
-		9F1113579F9B7B44FAFEDD8B /* UITextField+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
 		9F111371D0214BBC1076B953 /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extension.swift"; sourceTree = "<group>"; };
 		9F111440B0C3BD78FF88CE3E /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		9F1114C3DB80170190F8DDFE /* ProvenanceWalletError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProvenanceWalletError.swift; sourceTree = "<group>"; };
 		9F1114D8119F57014D3CE45F /* WalletConnectHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectHandlers.swift; sourceTree = "<group>"; };
 		9F11150E71F90FD972D6274C /* WalletService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletService.swift; sourceTree = "<group>"; };
 		9F1115DDDE46C23F7C922F1C /* Notification-Name+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification-Name+Extension.swift"; sourceTree = "<group>"; };
-		9F111685DBAE3A98763B640F /* AppColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
 		9F1116A9E582FD631373377C /* Request+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Request+Extension.swift"; sourceTree = "<group>"; };
 		9F1117A75CE5E6CA99F1735E /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		9F1118E9ED2D5682C1BC76DD /* ScannerViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerViewControllerDelegate.swift; sourceTree = "<group>"; };
-		9F11192319601FF1015197DD /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		9F111CBD27860BAAB2C1B5A7 /* ManageWalletViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageWalletViewController.swift; sourceTree = "<group>"; };
-		9F111CD9E8C6999C667858C1 /* UIImageView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
 		9F111D5C60AAA23BFBF634B1 /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		9F111FCB09DF51E6EF6DB80B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		A397F892A59D297363249C3C /* Pods-ProvenanceWalletConnectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnectTests.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnectTests/Pods-ProvenanceWalletConnectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A8CA210538E1107DB37AAAFA /* Pods_ProvenanceWalletConnectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProvenanceWalletConnectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF1EBAC626DC350F00758AAE /* WalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewController.swift; sourceTree = "<group>"; };
-		CF1EBAC926DC376B00758AAE /* UIDefaultButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDefaultButton.swift; sourceTree = "<group>"; };
 		CF1EBACB26DC5B0E00758AAE /* walletconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = walletconnect.png; sourceTree = "<group>"; };
 		CF7D8DBA27B2F8D8007D35BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CF83EBFD26D99E7D00BD5CC8 /* ProvenanceWalletConnect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProvenanceWalletConnect.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +160,15 @@
 		CF89424227B1C62200596596 /* hash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hash.png; sourceTree = "<group>"; };
 		CF89424327B1C62200596596 /* provenance-p.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "provenance-p.png"; sourceTree = "<group>"; };
 		CF89424627B1D23E00596596 /* ManageWalletView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManageWalletView.xib; sourceTree = "<group>"; };
+		D3A103B58A6C17B3AE2983E4 /* UITextField+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
+		D3A144514AF6B2B3820F21AA /* UIImageView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
+		D3A23B4D35793B0F366F1DE5 /* WalletConnectService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectService.swift; sourceTree = "<group>"; };
+		D3A261432EBABC99B38BDAFD /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfirmBroadcastTxView.xib; sourceTree = "<group>"; };
+		D3A36A6B67FEA1B7FE56A9F4 /* NavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavController.swift; sourceTree = "<group>"; };
+		D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
+		D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelValueDetailView.swift; sourceTree = "<group>"; };
+		D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmBroadcastTxViewController.swift; sourceTree = "<group>"; };
 		F15FDE6FC0107C0929409627 /* Pods-ProvenanceWalletConnect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect/Pods-ProvenanceWalletConnect.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -204,12 +214,21 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		69FB898D27B49275000FEEA1 /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
 		9F11111284519B9F09B5EE35 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				9F11150E71F90FD972D6274C /* WalletService.swift */,
 				9F111255539088A3A1E07624 /* CipherService.swift */,
 				9F111440B0C3BD78FF88CE3E /* NotificationService.swift */,
+				D3A23B4D35793B0F366F1DE5 /* WalletConnectService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -225,6 +244,9 @@
 				9F1110145154436971F15084 /* Data+Extension.swift */,
 				9F1115DDDE46C23F7C922F1C /* Notification-Name+Extension.swift */,
 				9F1116A9E582FD631373377C /* Request+Extension.swift */,
+				D3A261432EBABC99B38BDAFD /* UIView+Extension.swift */,
+				D3A103B58A6C17B3AE2983E4 /* UITextField+Extension.swift */,
+				D3A144514AF6B2B3820F21AA /* UIImageView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -241,6 +263,8 @@
 			isa = PBXGroup;
 			children = (
 				9F1117A75CE5E6CA99F1735E /* Utilities.swift */,
+				D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */,
+				D3A36A6B67FEA1B7FE56A9F4 /* NavController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -252,25 +276,6 @@
 				9F1114C3DB80170190F8DDFE /* ProvenanceWalletError.swift */,
 			);
 			path = Errors;
-			sourceTree = "<group>";
-		};
-		9F111DA5863AED3CB0E29A8F /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				9F111685DBAE3A98763B640F /* AppColor.swift */,
-				9F11101F888F44C4FA8564E1 /* NavController.swift */,
-				9F11192319601FF1015197DD /* UIView+Extension.swift */,
-				9F111CD9E8C6999C667858C1 /* UIImageView+Extension.swift */,
-				9F1113579F9B7B44FAFEDD8B /* UITextField+Extension.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		9F111DD5F725D22823375BE7 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		9F111F5E48F2DD63FB70A0B6 /* Controllers */ = {
@@ -285,6 +290,10 @@
 				CF89423D27B19BCC00596596 /* WalletView.xib */,
 				CF1EBAC626DC350F00758AAE /* WalletViewController.swift */,
 				9F1118E9ED2D5682C1BC76DD /* ScannerViewControllerDelegate.swift */,
+				69FB898927B30E54000FEEA1 /* ProvenanceResponseViewController.swift */,
+				69FB898A27B30E54000FEEA1 /* ProvenanceResponseView.xib */,
+				D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */,
+				D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -298,14 +307,6 @@
 				A8CA210538E1107DB37AAAFA /* Pods_ProvenanceWalletConnectTests.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		CF1EBAC826DC372B00758AAE /* Widgets */ = {
-			isa = PBXGroup;
-			children = (
-				CF1EBAC926DC376B00758AAE /* UIDefaultButton.swift */,
-			);
-			path = Widgets;
 			sourceTree = "<group>";
 		};
 		CF83EBF426D99E7D00BD5CC8 = {
@@ -343,13 +344,11 @@
 				CF83EC1126D99E7F00BD5CC8 /* Info.plist */,
 				9F1115274E9CCCF053394654 /* Common */,
 				9F111F5E48F2DD63FB70A0B6 /* Controllers */,
+				69FB898D27B49275000FEEA1 /* Widgets */,
 				9F1118FC9526208D4C7184D8 /* Errors */,
 				9F1113A75F48CFAA2C43270F /* Extensions */,
-				9F111DD5F725D22823375BE7 /* Models */,
 				9F11111284519B9F09B5EE35 /* Services */,
-				CF1EBAC826DC372B00758AAE /* Widgets */,
 				9F1113C4567D5DA149573AED /* Handlers */,
-				9F111DA5863AED3CB0E29A8F /* Utilities */,
 			);
 			path = ProvenanceWalletConnect;
 			sourceTree = "<group>";
@@ -494,6 +493,7 @@
 			files = (
 				CF83EC1026D99E7F00BD5CC8 /* LaunchScreen.storyboard in Resources */,
 				CF83EC3526D9A80900BD5CC8 /* provenance.svg in Resources */,
+				69FB898C27B30E54000FEEA1 /* ProvenanceResponseView.xib in Resources */,
 				CF7D8DBB27B2F8D8007D35BA /* Assets.xcassets in Resources */,
 				CF89424427B1C62200596596 /* hash.png in Resources */,
 				CF83EC3726D9A94400BD5CC8 /* provenance.png in Resources */,
@@ -502,6 +502,7 @@
 				CF89424527B1C62200596596 /* provenance-p.png in Resources */,
 				CF89423F27B19BCC00596596 /* WalletViewCell.xib in Resources */,
 				CF89424727B1D23E00596596 /* ManageWalletView.xib in Resources */,
+				D3A834737781E6CB258250B0 /* ConfirmBroadcastTxView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,7 +645,6 @@
 				9F11101CB57C9DD499C9ECBD /* ErrorHandler.swift in Sources */,
 				9F111AB7343B8393592C2074 /* ProvenanceWalletError.swift in Sources */,
 				9F111F033D3C956FFC42508C /* CipherService.swift in Sources */,
-				CF1EBACA26DC376B00758AAE /* UIDefaultButton.swift in Sources */,
 				9F111166EE05AB59CEE6B583 /* ScannerViewControllerDelegate.swift in Sources */,
 				9F1113AAFDFC1492AF54E6CB /* UIViewController+Extension.swift in Sources */,
 				9F111FA373B0A4EE13D80118 /* WalletConnectHandlers.swift in Sources */,
@@ -654,11 +654,15 @@
 				9F111581F2EF245DD42AFD2A /* NotificationService.swift in Sources */,
 				9F111D80E083935F5DF56932 /* Notification-Name+Extension.swift in Sources */,
 				9F1110AD35FD2170A1FF6AC0 /* Request+Extension.swift in Sources */,
-				9F11124A3EA1F472FA75E0CC /* AppColor.swift in Sources */,
-				9F111F6EBB051F57AD642434 /* NavController.swift in Sources */,
-				9F11143BB6F0B4037F79B14A /* UIView+Extension.swift in Sources */,
-				9F111E40D705418E25A475FA /* UIImageView+Extension.swift in Sources */,
-				9F11116CFB4D0C9807E2ACC9 /* UITextField+Extension.swift in Sources */,
+				D3A9400557A6CA30DFB30A7D /* UIView+Extension.swift in Sources */,
+				69FB898B27B30E54000FEEA1 /* ProvenanceResponseViewController.swift in Sources */,
+				D3A258B02AC7DAC048802AA4 /* UITextField+Extension.swift in Sources */,
+				D3A53780CE1B9391396A2163 /* UIImageView+Extension.swift in Sources */,
+				D3A0D8F118FA0D3550687A11 /* AppColor.swift in Sources */,
+				D3AE4507489C169CF45D26B3 /* NavController.swift in Sources */,
+				D3ADE30DA391E193062034FD /* WalletConnectService.swift in Sources */,
+				D3AB1ADB3BBB17025460FFC8 /* LabelValueDetailView.swift in Sources */,
+				D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -45,4 +45,9 @@ extension UIViewController {
 	func notificationService() -> NotificationService {
 		appDelegate().notificationService
 	}
+
+	func walletConnectService() -> WalletConnectService {
+		appDelegate().walletConnectService
+	}
+
 }

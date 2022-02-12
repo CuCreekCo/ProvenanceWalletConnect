@@ -273,6 +273,26 @@ class WalletService: NSObject {
 		return try estPromise.wait()
 	}
 
+	func estimateTx(signingKey: PrivateKey, message: Message, completion: @escaping (Cosmos_Base_Abci_V1beta1_GasInfo?, Error?) -> Void) throws {
+
+		// Query the blockchain account in a blocking wait
+		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
+
+		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
+
+		let txMsg = try Google_Protobuf_Any.from(message: message)
+
+		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: [txMsg])
+
+		estPromise.whenSuccess({ info in
+			completion(info, nil)
+		})
+
+		estPromise.whenFailure { error in
+			completion(nil, error)
+		}
+	}
+
 	func broadcastTx(signingKey: PrivateKey, message: Message, gasEstimate: Cosmos_Base_Abci_V1beta1_GasInfo) throws -> RawTxResponsePair {
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()

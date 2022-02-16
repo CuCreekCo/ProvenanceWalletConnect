@@ -299,7 +299,7 @@ extension WalletViewController: UICollectionViewDelegate {
 
 			} else {
 				let description = try request.description()
-				let messageBytes = try request.message()
+				let messageBytes = try request.messages().first ?? ""
 				let decodedMessage = String(data: Data(hex: messageBytes), encoding: .utf8) ?? messageBytes
 
 				askToSign(request: request, description: description, message: decodedMessage) {

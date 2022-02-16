@@ -15,8 +15,7 @@ class ErrorResponseViewController: UIViewController {
 
 	private var requestType: Notification.Name?
 	private var request: Request!
-	private var messageType: String!
-	private var message: Message!
+	private var txMessageRequests: [TxMessageRequest] = []
 	private var messageKVArray: [(String, String)] = []
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,8 +30,8 @@ class ErrorResponseViewController: UIViewController {
 		request = walletConnectRequest.1
 
 		do {
-			(messageType, message) = try request.decodeMessage()
-			messageLabel.text = messageType.substringAfterLast(".").camelCaseToWords()
+			txMessageRequests = try request.decodeMessages()
+			messageLabel.text = txMessageRequests.first?.typeTitle()
 
 			messageKVArray = parseTxResponseFields()
 		} catch {
@@ -184,7 +183,7 @@ extension ErrorResponseViewController: UITableViewDelegate {
 		if (section == 2) {
 			return "Transaction Details"
 		}
-		return messageType.substringAfterLast(".").camelCaseToWords()
+		return txMessageRequests.first?.typeTitle()
 	}
 
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

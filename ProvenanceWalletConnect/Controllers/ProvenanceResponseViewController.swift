@@ -15,9 +15,8 @@ class ProvenanceResponseViewController: UIViewController {
 
 	private var requestType: Notification.Name?
 	private var request: Request!
-	private var messageType: String!
-	private var message: Message!
-	private var messageKVArray: [(String, String)] = []
+	private var txMessageRequests: [TxMessageRequest] = []
+	private var messageKVArray: [[(String, String)]] = []
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------
 	override func viewDidLoad() {
@@ -31,10 +30,15 @@ class ProvenanceResponseViewController: UIViewController {
 		request = walletConnectRequest.1
 
 		do {
-			(messageType, message) = try request.decodeMessage()
-			messageLabel.text = messageType.substringAfterLast(".").camelCaseToWords()
+			do {
+				messageLabel.text = try request.description()
+			} catch {
+				messageLabel.text = requestType?.rawValue
+			}
 
-			messageKVArray = parseTxResponseFields()
+			txMessageRequests = try request.decodeMessages()
+			messageKVArray = parseMessageFields()
+
 		} catch {
 			onMainThread {
 				//TODO make me a slide up modal and pop view on confirm
@@ -46,20 +50,26 @@ class ProvenanceResponseViewController: UIViewController {
 
 	}
 
-	private func messageFieldCount() -> Int {
+	func messageCount() -> Int {
+		txMessageRequests.count
+	}
+	func messageFieldCount(section: Int) -> Int {
 		messageKVArray.count
 	}
-
-	private func parseTxResponseFields() -> [(String, String)] {
-		do {
-			let jsonString = try rawResponsePair.txResponse.jsonString()
-			let json = JSON.init(parseJSON: jsonString)
-			Utilities.log(jsonString)
-			return json.flatten()
-		} catch {
-			Utilities.log(error)
-			return [("error", "\(error)")]
+	func parseMessageFields() -> [[(String, String)]] {
+		var r:[[(String, String)]] = []
+		for index in 0..<messageCount() {
+			do {
+				let jsonString = try txMessageRequests[index].message.jsonString()
+				let json = JSON.init(parseJSON: jsonString)
+				Utilities.log(jsonString)
+				r.append(json.flatten())
+			} catch {
+				Utilities.log(error)
+				r.append([("error", "\(error)")])
+			}
 		}
+		return r
 	}
 
 	// MARK: - User actions
@@ -75,7 +85,7 @@ class ProvenanceResponseViewController: UIViewController {
 extension ProvenanceResponseViewController: UITableViewDataSource {
 	func numberOfSections(in tableView: UITableView) -> Int {
 		//Sections: dApp, Gas (wanted, used, total fees), Details (block, id, status, time, memo), Transaction Response (dynamic)
-		4
+		3 + messageCount()
 	}
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
@@ -88,9 +98,7 @@ extension ProvenanceResponseViewController: UITableViewDataSource {
 		if (section == 2) {
 			return 5 //Details
 		}
-		if (section == 3) {
-			return messageFieldCount()
-		}
+		return messageKVArray[section - 3].count
 		return 0
 	}
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -161,7 +169,7 @@ extension ProvenanceResponseViewController: UITableViewDataSource {
 			let label = cell!.textLabel!
 			let value = cell!.detailTextLabel!
 
-			let kv = messageKVArray[indexPath.row]
+			let kv = messageKVArray[indexPath.section - 3][indexPath.row]
 			label.text = kv.0
 			value.text = kv.1
 			return cell!
@@ -184,7 +192,7 @@ extension ProvenanceResponseViewController: UITableViewDelegate {
 		if (section == 2) {
 			return "Transaction Details"
 		}
-		return messageType.substringAfterLast(".").camelCaseToWords()
+		return "\(txMessageRequests[section - 3].typeTitle()) [\(section - 3 + 1)]"
 	}
 
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

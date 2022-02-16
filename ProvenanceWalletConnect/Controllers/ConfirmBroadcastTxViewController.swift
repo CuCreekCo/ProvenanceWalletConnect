@@ -20,10 +20,9 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
     private var requestType: Notification.Name?
     private var request: Request!
-    private var messageType: String!
-    private var message: Message!
+    private var txMessageRequests: [TxMessageRequest] = []
     private var gasEstimate: GasEstimate?
-    private var messageKVArray: [(String, String)] = []
+    private var messageKVArray: [[(String, String)]] = []
 
     private enum TxState {
         case ready_to_broadcast
@@ -47,7 +46,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
         request = walletConnectRequest.1
 
         do {
-            (messageType, message) = try request.decodeMessage()
+            txMessageRequests = try request.decodeMessages()
             messageKVArray = parseMessageFields()
             setButtonState([.ready_to_broadcast])
         } catch {
@@ -95,6 +94,12 @@ class ConfirmBroadcastTxViewController: UIViewController {
         }
     }
 
+    private func requestMessages() -> [Message] {
+        txMessageRequests.map { request -> Message in
+            request.message
+        }
+    }
+
 // MARK: - User actions
 
     @IBAction func actionSend(_ sender: UIButton) {
@@ -109,7 +114,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
                 }
                 let signingKey = try walletService().defaultPrivateKey()
 
-                walletService().broadcastTx(signingKey: signingKey, messages: [message], gasEstimate: gasEstimate!) { pair, error in
+                walletService().broadcastTx(signingKey: signingKey, messages: requestMessages(), gasEstimate: gasEstimate!) { pair, error in
 
                     self.onMainThread {
                         self.activityIndicator.stopAnimating()
@@ -201,7 +206,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
     func calculateGasFee() throws {
         let signingKey = try walletService().defaultPrivateKey()
 
-        try walletService().estimateTx(signingKey: signingKey, messages: [message]) { [self] gasEstimate, error in
+        try walletService().estimateTx(signingKey: signingKey, messages: requestMessages()) { [self] gasEstimate, error in
             if (error != nil) {
                 onMainThread {
                     [self]
@@ -224,33 +229,44 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
     func messageJsonString() -> String {
         do {
-            return try message.jsonString()
+            let s = try requestMessages().map { message -> String in
+                try message.jsonString()
+            }.joined(separator: ",")
+            return "[ \(s) ]"
         } catch {
             return "\(error)"
         }
     }
 
-    func messageFieldCount() -> Int {
+    func messageCount() -> Int {
+        txMessageRequests.count
+    }
+
+    func messageFieldCount(section: Int) -> Int {
         messageKVArray.count
     }
 
-    func parseMessageFields() -> [(String, String)] {
-        do {
-            let jsonString = try message.jsonString()
-            let json = JSON.init(parseJSON: jsonString)
-            Utilities.log(jsonString)
-            return json.flatten()
-        } catch {
-            Utilities.log(error)
-            return [("error", "\(error)")]
+    func parseMessageFields() -> [[(String, String)]] {
+        var r:[[(String, String)]] = []
+        for index in 0..<messageCount() {
+            do {
+                let jsonString = try txMessageRequests[index].message.jsonString()
+                let json = JSON.init(parseJSON: jsonString)
+                Utilities.log(jsonString)
+                r.append(json.flatten())
+            } catch {
+                Utilities.log(error)
+                r.append([("error", "\(error)")])
+            }
         }
+        return r
     }
 }
 
 // MARK: - UITableViewDataSource
 extension ConfirmBroadcastTxViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        3
+        2 + messageCount()
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
@@ -260,9 +276,8 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
         if (section == 1) {
             return 2
         }
-        if (section == 2) {
-            return messageFieldCount()
-        }
+        return messageKVArray[section - 2].count
+
         return 0
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -304,7 +319,7 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
             let label = cell!.textLabel!
             let value = cell!.detailTextLabel!
 
-            let kv = messageKVArray[indexPath.row]
+            let kv = messageKVArray[indexPath.section - 2][indexPath.row]
             label.text = kv.0
             value.text = kv.1
             return cell!
@@ -323,7 +338,7 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
         if (section == 1) {
             return "Gas"
         }
-        return messageType.substringAfterLast(".").camelCaseToWords()
+        return "\(txMessageRequests[section - 2].typeTitle()) [\(section - 2 + 1)]"
     }
 
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

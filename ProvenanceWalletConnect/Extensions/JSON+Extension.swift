@@ -26,6 +26,9 @@ extension JSON {
 	func flatten() -> [(String, String)] {
 		var toArr: [(String, String)] = []
 		flatJson(self, array: &toArr)
+		toArr.sort { tuple, tuple2 in
+			tuple.0 < tuple2.0
+		}
 		return toArr
 	}
 

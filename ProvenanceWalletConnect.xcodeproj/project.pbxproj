@@ -81,6 +81,7 @@
 		D3A0D8F118FA0D3550687A11 /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */; };
 		D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */; };
 		D3A258B02AC7DAC048802AA4 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A103B58A6C17B3AE2983E4 /* UITextField+Extension.swift */; };
+		D3A2EC2DB090539BE4A501E5 /* TxMessageRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A967A409D7A155AD240F6D /* TxMessageRequest.swift */; };
 		D3A53780CE1B9391396A2163 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A144514AF6B2B3820F21AA /* UIImageView+Extension.swift */; };
 		D3A653523A5D907CAB630B2B /* ErrorResponseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A46689E3F2679D483D2E8F /* ErrorResponseViewController.swift */; };
 		D3A6CDCA7F1D78A8F3B320BA /* ErrorResponseView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3AAA9491BCB9EBF68829DFB /* ErrorResponseView.xib */; };
@@ -173,6 +174,7 @@
 		D3A46689E3F2679D483D2E8F /* ErrorResponseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorResponseViewController.swift; sourceTree = "<group>"; };
 		D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
 		D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelValueDetailView.swift; sourceTree = "<group>"; };
+		D3A967A409D7A155AD240F6D /* TxMessageRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TxMessageRequest.swift; sourceTree = "<group>"; };
 		D3AAA9491BCB9EBF68829DFB /* ErrorResponseView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorResponseView.xib; sourceTree = "<group>"; };
 		D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmBroadcastTxViewController.swift; sourceTree = "<group>"; };
 		F15FDE6FC0107C0929409627 /* Pods-ProvenanceWalletConnect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect/Pods-ProvenanceWalletConnect.debug.xcconfig"; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 		D3A0AE5C0224D42039379174 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D3A967A409D7A155AD240F6D /* TxMessageRequest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 				D3AB1ADB3BBB17025460FFC8 /* LabelValueDetailView.swift in Sources */,
 				D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */,
 				D3A653523A5D907CAB630B2B /* ErrorResponseViewController.swift in Sources */,
+				D3A2EC2DB090539BE4A501E5 /* TxMessageRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

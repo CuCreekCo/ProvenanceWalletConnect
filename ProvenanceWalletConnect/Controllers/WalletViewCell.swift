@@ -11,7 +11,6 @@ class WalletViewCell: UICollectionViewCell {
 	func bindData(index: IndexPath, data: (Notification.Name, Request)) {
 
 		let name = data.0.rawValue
-		//imageViewProfile.greenCircle()
 		do {
 			labelName.text = try data.1.description()
 		} catch {

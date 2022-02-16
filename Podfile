@@ -8,7 +8,7 @@ target 'ProvenanceWalletConnect' do
   use_frameworks!
 
   # Pods for ProvenanceWalletConnect
-  pod 'ProvWallet' , '~> 0.0.7'
+  pod 'ProvWallet' , '~> 0.0.11'
   # pod 'ProvWallet' , :path=> '~/git/provwallet-swift'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'WalletConnectSwift'

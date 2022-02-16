@@ -26,7 +26,7 @@ PODS:
     - gRPC-Swift (= 1.4.2)
   - IQKeyboardManagerSwift (6.5.9)
   - Logging (1.4.0)
-  - ProvWallet (0.0.7):
+  - ProvWallet (0.0.11):
     - CryptoSwift (~> 1.4.0)
     - gRPC-Swift (~> 1.4.0)
     - gRPC-Swift-Plugins (~> 1.4.0)
@@ -51,7 +51,7 @@ PODS:
   - SwiftNIOFoundationCompat (2.32.3):
     - SwiftNIO (= 2.32.3)
     - SwiftNIOCore (= 2.32.3)
-  - SwiftNIOHPACK (1.18.3):
+  - SwiftNIOHPACK (1.19.2):
     - SwiftNIO (< 3, >= 2.32.0)
     - SwiftNIOConcurrencyHelpers (< 3, >= 2.32.0)
     - SwiftNIOCore (< 3, >= 2.32.0)
@@ -61,11 +61,11 @@ PODS:
     - SwiftNIO (= 2.32.3)
     - SwiftNIOConcurrencyHelpers (= 2.32.3)
     - SwiftNIOCore (= 2.32.3)
-  - SwiftNIOHTTP2 (1.18.3):
+  - SwiftNIOHTTP2 (1.19.2):
     - SwiftNIO (< 3, >= 2.32.0)
     - SwiftNIOConcurrencyHelpers (< 3, >= 2.32.0)
     - SwiftNIOCore (< 3, >= 2.32.0)
-    - SwiftNIOHPACK (= 1.18.3)
+    - SwiftNIOHPACK (= 1.19.2)
     - SwiftNIOHTTP1 (< 3, >= 2.32.0)
     - SwiftNIOTLS (< 3, >= 2.32.0)
   - SwiftNIOPosix (2.32.3):
@@ -99,7 +99,7 @@ PODS:
 DEPENDENCIES:
   - Charts
   - IQKeyboardManagerSwift
-  - ProvWallet (~> 0.0.7)
+  - ProvWallet (~> 0.0.11)
   - SwiftyJSON (~> 4.0)
   - WalletConnectSwift
 
@@ -156,7 +156,7 @@ SPEC CHECKSUMS:
   gRPC-Swift-Plugins: 6c2a4d17afd229a4c4d1b5fcff46869dd250492d
   IQKeyboardManagerSwift: 6e839c575c4aa1078d58a596e41244e77abe918f
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  ProvWallet: a46a15fc6f42f09ad92078a3cc3bec2b70cf1419
+  ProvWallet: 6eaf699250012fdb86935e2e58054580e2d2f77c
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftNIO: bb336ceef32850e9671d3fa0e0cc2b9add3b5948
@@ -165,9 +165,9 @@ SPEC CHECKSUMS:
   SwiftNIOEmbedded: b7ccf12b402dff35a5d4356990a6253621e4337d
   SwiftNIOExtras: 70f09aa8eca3ab6baeaf1993da9c855b6e95e97f
   SwiftNIOFoundationCompat: d3b888766e7c67354a4e4e145d38edf9586efa0c
-  SwiftNIOHPACK: e2fc784ce453bec4c058b21071e89fb7e542ac30
+  SwiftNIOHPACK: 5692b7d669e954adf9920432a8a3e279aceee55e
   SwiftNIOHTTP1: 349a16aae363250cd49f430a9fdb93cff518adfa
-  SwiftNIOHTTP2: a0322f3dcecd949e03df65f4dac106411df0f12c
+  SwiftNIOHTTP2: f6dd22df6f4463d4f5bf310cb2f43e52f4e79ce2
   SwiftNIOPosix: e4988a8dcfd5a6319bde219d7a3d0acc5fbe7a89
   SwiftNIOSSL: 7c2ddcbcbb2a8188468b7fe9c2bc6124df4b3772
   SwiftNIOTLS: 1b8290ec775238ccc714ed842d929494df95a2c2
@@ -176,6 +176,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
   WalletConnectSwift: 1fbff8f5315bd8d41596773ca1b384aa873b6824
 
-PODFILE CHECKSUM: fea13c82d74449a3cd8310b6452b1697511fcf9f
+PODFILE CHECKSUM: 8390dd46915b8f2e36e644c99ffeee1e260138f1
 
 COCOAPODS: 1.11.2

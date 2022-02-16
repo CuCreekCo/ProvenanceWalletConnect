@@ -267,48 +267,46 @@ class WalletService: NSObject {
 		(Double(nhash) ?? 0.0) / 1000000000
 	}
 
-	private func adjustGas(_ gasInfo: Cosmos_Base_Abci_V1beta1_GasInfo) -> GasEstimate {
-		var gasFactor: Double = Double(gasInfo.gasUsed) * 1.3
-		gasFactor.round(.up)
-		return GasEstimate(
-				gasInfo: gasInfo,
-				gas: UInt64(gasFactor),
-				gasFee: nhashToHash(UInt64(gasFactor) * Tx.gasPrice),
-			    denom: "Hash")
-	}
-
-	func estimateTx(signingKey: PrivateKey, message: [Message]) throws -> GasEstimate {
+	func estimateTx(signingKey: PrivateKey, messages: [Message]) throws -> GasEstimate {
 
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
 
 		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
 
-		let txMsgs = try message.map { message -> Google_Protobuf_Any in
+		let txMsgs = try messages.map { message -> Google_Protobuf_Any in
 			try Google_Protobuf_Any.from(message: message)
 		}
 
-		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: txMsgs)
+		let estPromise: EventLoopFuture<GasEstimate> = try tx.estimateTx(messages: txMsgs)
 
-		let gasInfo = try estPromise.wait()
-		return adjustGas(gasInfo)
+		let gasEstimate = try estPromise.wait()
+
+		Utilities.log(gasEstimate)
+
+		return gasEstimate
 	}
 
-	func estimateTx(signingKey: PrivateKey, message: [Message], completion: @escaping (GasEstimate?, Error?) -> Void) throws {
+	func estimateTx(signingKey: PrivateKey, messages: [Message], completion: @escaping (GasEstimate?, Error?) -> Void) throws {
 
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
 
 		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
 
-		let txMsgs = try message.map { message -> Google_Protobuf_Any in
+		let txMsgs = try messages.map { message -> Google_Protobuf_Any in
 			try Google_Protobuf_Any.from(message: message)
 		}
 
-		let estPromise: EventLoopFuture<Cosmos_Base_Abci_V1beta1_GasInfo> = try tx.estimateTx(messages: txMsgs)
+		let estPromise: EventLoopFuture<GasEstimate> = try tx.estimateTx(messages: txMsgs)
 
 		estPromise.whenSuccess({ [self] info in
-			completion(adjustGas(info), nil)
+			do {
+				Utilities.log(info)
+			} catch {
+				Utilities.log(error)
+			}
+			completion(info, nil)
 		})
 
 		estPromise.whenFailure { error in
@@ -316,16 +314,40 @@ class WalletService: NSObject {
 		}
 	}
 
-	func broadcastTx(signingKey: PrivateKey, message: Message, gasEstimate: Cosmos_Base_Abci_V1beta1_GasInfo) throws -> RawTxResponsePair {
+	func broadcastTx(signingKey: PrivateKey, messages: [Message], gasEstimate: GasEstimate) throws -> RawTxResponsePair {
 		// Query the blockchain account in a blocking wait
 		let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
 
 		let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
 
-		let txMsg = try Google_Protobuf_Any.from(message: message)
+		let txMsgs = try messages.map { message -> Google_Protobuf_Any in
+			try Google_Protobuf_Any.from(message: message)
+		}
 
-		let txPromise: EventLoopFuture<RawTxResponsePair> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: [txMsg])
+		let txPromise: EventLoopFuture<RawTxResponsePair> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: txMsgs)
 		return try txPromise.wait()
+	}
+
+	func broadcastTx(signingKey: PrivateKey, messages: [Message], gasEstimate: GasEstimate, completion: @escaping (RawTxResponsePair?, Error?) -> Void) {
+		do {
+			let baseAccount = try auth.baseAccount(address: signingKey.publicKey.address).wait()
+			let tx = Tx(signingKey: signingKey, baseAccount: baseAccount, channel: channel)
+
+			let txMsgs = try messages.map { message -> Google_Protobuf_Any in
+				try Google_Protobuf_Any.from(message: message)
+			}
+
+			let txPromise: EventLoopFuture<RawTxResponsePair> = try tx.broadcastTx(gasEstimate: gasEstimate, messages: txMsgs)
+			txPromise.whenSuccess { pair in
+				completion(pair, nil)
+			}
+			txPromise.whenFailure { error in
+				completion(nil, error)
+			}
+		} catch {
+			Utilities.log(error)
+			completion(nil, error)
+		}
 	}
 
 }

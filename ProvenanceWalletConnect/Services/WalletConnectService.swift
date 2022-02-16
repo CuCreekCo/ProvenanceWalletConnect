@@ -22,7 +22,7 @@ class WalletConnectApproval: NSObject {
 class WalletConnectService: NSObject {
     let sessionKey = "sessionKey"
     var server: Server!
-    var session: Session!
+    var connectedSession: Session?
     var notificationService: NotificationService!
     var walletService: WalletService!
 
@@ -35,10 +35,10 @@ class WalletConnectService: NSObject {
 
     private func configureServer() {
         server = Server(delegate: self)
-        server.register(handler: PersonalSignHandler(server: server, walletService: self.walletService,
-                notificationService: self.notificationService))
-        server.register(handler: SendTransactionHandler(server: server, walletService: self.walletService,
-                notificationService: self.notificationService))
+        server.register(handler: PersonalSignHandler(server: server, walletService: walletService,
+                notificationService: notificationService))
+        server.register(handler: SendTransactionHandler(server: server, walletService: walletService,
+                notificationService: notificationService))
 
         reconnect()
     }
@@ -61,10 +61,10 @@ class WalletConnectService: NSObject {
 
     func disconnect() -> Bool {
         do {
-            if (server == nil || session == nil) {
+            if (server == nil || connectedSession == nil) {
                 return false
             }
-            try server.disconnect(from: self.session)
+            try server.disconnect(from: connectedSession!)
             return true
         } catch {
             Utilities.log(error)
@@ -72,20 +72,20 @@ class WalletConnectService: NSObject {
         return false
     }
 
-    func getSession() -> Session {
-        session
+    func getSession() -> Session? {
+        connectedSession
     }
 
     func dAppName() -> String? {
-        session?.dAppInfo.peerMeta.name
+        connectedSession?.dAppInfo.peerMeta.name
     }
 
     func dAppDescription() -> String? {
-        session?.dAppInfo.peerMeta.description
+        connectedSession?.dAppInfo.peerMeta.description
     }
 
     func dAppUrl() -> String? {
-        session?.dAppInfo.peerMeta.url.absoluteString
+        connectedSession?.dAppInfo.peerMeta.url.absoluteString
     }
 
     func send(_ response: Response) {
@@ -161,7 +161,7 @@ extension WalletConnectService: ServerDelegate {
     }
 
     func server(_ server: Server, didConnect session: Session) {
-        self.session = session
+        connectedSession = session
         let sessionData = try! JSONEncoder().encode(session)
         UserDefaults.standard.set(sessionData, forKey: sessionKey)
         notificationService.post(NotificationModel(name: Notification.Name.wcDidConnect, sender: self, object: session))
@@ -170,9 +170,11 @@ extension WalletConnectService: ServerDelegate {
     func server(_ server: Server, didDisconnect session: Session) {
         UserDefaults.standard.removeObject(forKey: sessionKey)
         notificationService.post(NotificationModel(name: Notification.Name.wcDidDisconnect, sender: self, object: session))
+        connectedSession = nil
     }
 
     func server(_ server: Server, didUpdate session: Session) {
         notificationService.post(NotificationModel(name: Notification.Name.wcDidUpdate, sender: self, object: session))
+        connectedSession = session
     }
 }

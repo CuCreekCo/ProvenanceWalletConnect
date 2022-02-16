@@ -4,7 +4,7 @@ import WalletConnectSwift
 import SwiftyJSON
 import SwiftProtobuf
 
-class ProvenanceResponseViewController: UIViewController {
+class ErrorResponseViewController: UIViewController {
 
 	@IBOutlet var messageLabel: UILabel!
 	@IBOutlet var buttonClose: UIButton!
@@ -72,7 +72,7 @@ class ProvenanceResponseViewController: UIViewController {
 }
 
 // MARK: - Table Data Source
-extension ProvenanceResponseViewController: UITableViewDataSource {
+extension ErrorResponseViewController: UITableViewDataSource {
 	func numberOfSections(in tableView: UITableView) -> Int {
 		//Sections: dApp, Gas (wanted, used, total fees), Details (block, id, status, time, memo), Transaction Response (dynamic)
 		4
@@ -172,7 +172,7 @@ extension ProvenanceResponseViewController: UITableViewDataSource {
 }
 
 // MARK: - Table Delegate
-extension ProvenanceResponseViewController: UITableViewDelegate {
+extension ErrorResponseViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		//Sections: dApp, Gas (wanted, used, total fees), Details (block, id, status, time, memo), Transaction Response (dynamic)
 		if (section == 0) {

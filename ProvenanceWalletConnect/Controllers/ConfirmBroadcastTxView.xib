@@ -13,6 +13,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConfirmBroadcastTxViewController" customModule="ProvenanceWalletConnect" customModuleProvider="target">
             <connections>
                 <outlet property="activityIndicator" destination="PYV-Tw-F9d" id="w3u-jY-80a"/>
+                <outlet property="rejectButton" destination="ZKN-y6-3Xg" id="Ung-cd-A5d"/>
+                <outlet property="sendButton" destination="Fvt-ml-9YS" id="F0i-xn-TvD"/>
                 <outlet property="tableView" destination="P47-Od-kX8" id="1Kd-A2-dkJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -30,7 +32,7 @@
                         <outlet property="delegate" destination="-1" id="sx4-8y-Zv3"/>
                     </connections>
                 </tableView>
-                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fvt-ml-9YS">
+                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fvt-ml-9YS">
                     <rect key="frame" x="15" y="440" width="290" height="50"/>
                     <color key="backgroundColor" name="Theme"/>
                     <constraints>
@@ -50,7 +52,7 @@
                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="PYV-Tw-F9d">
                     <rect key="frame" x="150" y="274" width="20" height="20"/>
                 </activityIndicatorView>
-                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKN-y6-3Xg">
+                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZKN-y6-3Xg">
                     <rect key="frame" x="15" y="498" width="290" height="50"/>
                     <color key="backgroundColor" systemColor="secondarySystemFillColor"/>
                     <constraints>

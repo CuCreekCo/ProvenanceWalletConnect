@@ -82,10 +82,11 @@
 		D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */; };
 		D3A258B02AC7DAC048802AA4 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A103B58A6C17B3AE2983E4 /* UITextField+Extension.swift */; };
 		D3A53780CE1B9391396A2163 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A144514AF6B2B3820F21AA /* UIImageView+Extension.swift */; };
+		D3A653523A5D907CAB630B2B /* ErrorResponseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A46689E3F2679D483D2E8F /* ErrorResponseViewController.swift */; };
+		D3A6CDCA7F1D78A8F3B320BA /* ErrorResponseView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3AAA9491BCB9EBF68829DFB /* ErrorResponseView.xib */; };
 		D3A834737781E6CB258250B0 /* ConfirmBroadcastTxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */; };
 		D3A9400557A6CA30DFB30A7D /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A261432EBABC99B38BDAFD /* UIView+Extension.swift */; };
 		D3AB1ADB3BBB17025460FFC8 /* LabelValueDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */; };
-		D3AD1F0ADC0C4B959865EF1D /* GasEstimate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A88DDD5460D03645F73AAC /* GasEstimate.swift */; };
 		D3ADE30DA391E193062034FD /* WalletConnectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A23B4D35793B0F366F1DE5 /* WalletConnectService.swift */; };
 		D3AE4507489C169CF45D26B3 /* NavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A36A6B67FEA1B7FE56A9F4 /* NavController.swift */; };
 /* End PBXBuildFile section */
@@ -169,9 +170,10 @@
 		D3A261432EBABC99B38BDAFD /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfirmBroadcastTxView.xib; sourceTree = "<group>"; };
 		D3A36A6B67FEA1B7FE56A9F4 /* NavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavController.swift; sourceTree = "<group>"; };
+		D3A46689E3F2679D483D2E8F /* ErrorResponseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorResponseViewController.swift; sourceTree = "<group>"; };
 		D3A49BEB3DF215F71B4F3E08 /* AppColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
 		D3A4B5F0B71436FBF225733E /* LabelValueDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelValueDetailView.swift; sourceTree = "<group>"; };
-		D3A88DDD5460D03645F73AAC /* GasEstimate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GasEstimate.swift; sourceTree = "<group>"; };
+		D3AAA9491BCB9EBF68829DFB /* ErrorResponseView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorResponseView.xib; sourceTree = "<group>"; };
 		D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmBroadcastTxViewController.swift; sourceTree = "<group>"; };
 		F15FDE6FC0107C0929409627 /* Pods-ProvenanceWalletConnect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProvenanceWalletConnect.debug.xcconfig"; path = "Target Support Files/Pods-ProvenanceWalletConnect/Pods-ProvenanceWalletConnect.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -299,6 +301,8 @@
 				69FB898A27B30E54000FEEA1 /* ProvenanceResponseView.xib */,
 				D3AF5BE5EF72C45D6AE50315 /* ConfirmBroadcastTxViewController.swift */,
 				D3A344682C1F061A9152BBBF /* ConfirmBroadcastTxView.xib */,
+				D3AAA9491BCB9EBF68829DFB /* ErrorResponseView.xib */,
+				D3A46689E3F2679D483D2E8F /* ErrorResponseViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -392,7 +396,6 @@
 		D3A0AE5C0224D42039379174 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				D3A88DDD5460D03645F73AAC /* GasEstimate.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -518,6 +521,7 @@
 				CF89423F27B19BCC00596596 /* WalletViewCell.xib in Resources */,
 				CF89424727B1D23E00596596 /* ManageWalletView.xib in Resources */,
 				D3A834737781E6CB258250B0 /* ConfirmBroadcastTxView.xib in Resources */,
+				D3A6CDCA7F1D78A8F3B320BA /* ErrorResponseView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,7 +682,7 @@
 				D3ADE30DA391E193062034FD /* WalletConnectService.swift in Sources */,
 				D3AB1ADB3BBB17025460FFC8 /* LabelValueDetailView.swift in Sources */,
 				D3A18CD5229062B5C54350DE /* ConfirmBroadcastTxViewController.swift in Sources */,
-				D3AD1F0ADC0C4B959865EF1D /* GasEstimate.swift in Sources */,
+				D3A653523A5D907CAB630B2B /* ErrorResponseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

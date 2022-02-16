@@ -208,7 +208,7 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate {
 						self.clearApplicationOpenURL()
 					} else {
 						if (self.walletConnectService().openSessions() > 0) {
-							self.setButtonState([.walletconnected], dAppInfo: self.walletConnectService().getSession().dAppInfo)
+							self.setButtonState([.walletconnected], dAppInfo: self.walletConnectService().getSession()?.dAppInfo)
 						} else {
 							self.setButtonState([.not_walletconnected])
 						}

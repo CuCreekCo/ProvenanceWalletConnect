@@ -22,4 +22,29 @@ extension JSON {
 			self = JSON(dict);
 		}
 	}
+
+	func flatten() -> [(String, String)] {
+		var toArr: [(String, String)] = []
+		flatJson(self, array: &toArr)
+		return toArr
+	}
+
+	private func flatJson(_ json: JSON, label: String = "", array: inout [(String, String)]) {
+		for (k, v) in json {
+			if (v.type == .dictionary) {
+				flatJson(v, label: k.camelCaseToWords().capitalized, array: &array)
+			} else if (v.type == .array) {
+				for a in v.arrayValue {
+					if(a.type == .array || a.type == .dictionary) {
+						flatJson(a, label: k.camelCaseToWords().capitalized, array: &array)
+					} else {
+						array.append((k.camelCaseToWords().capitalized, a.stringValue))
+					}
+				}
+			} else {
+				array.append((k.camelCaseToWords().capitalized, v.stringValue))
+			}
+		}
+	}
+
 }

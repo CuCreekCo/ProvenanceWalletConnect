@@ -9,6 +9,9 @@ class ConfirmBroadcastTxViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
 
+    @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var rejectButton: UIButton!
+    
     private var sections = ["WalletConnect", "Gas"]
 
     var walletConnectRequest: (Notification.Name, Request)!
@@ -22,7 +25,14 @@ class ConfirmBroadcastTxViewController: UIViewController {
     private var gasEstimate: GasEstimate?
     private var messageKVArray: [(String, String)] = []
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------
+    private enum TxState {
+        case ready_to_broadcast
+        case broadcasting
+        case success
+        case error
+    }
+// MARK: - View Lifecycle
+
     override func viewDidLoad() {
 
         super.viewDidLoad()
@@ -39,11 +49,13 @@ class ConfirmBroadcastTxViewController: UIViewController {
         do {
             (messageType, message) = try request.decodeMessage()
             messageKVArray = parseMessageFields()
+            setButtonState([.ready_to_broadcast])
         } catch {
             onMainThread {
                 //TODO make me a slide up modal and pop view on confirm
+                self.setButtonState([.error])
                 Utilities.showAlert(title: "Error", message: "\(error)") {
-                    //self.navigationController?.popToRootViewController(animated: true)
+                    self.navigationController?.popToRootViewController(animated: true)
                 }
             }
         }
@@ -56,50 +68,110 @@ class ConfirmBroadcastTxViewController: UIViewController {
         } catch {
             //TODO make me a slide up modal and pop view on confirm
             Utilities.showAlert(title: "Error", message: "\(error)") {
-                //self.navigationController?.popToRootViewController(animated: true)
+                self.navigationController?.popToRootViewController(animated: true)
             }
         }
 
     }
 
-    // MARK: - Data methods
-    //-------------------------------------------------------------------------------------------------------------------------------------------
+    private func setButtonState(_ state: [TxState]) {
+        onMainThread {
+            if(state.contains(.ready_to_broadcast)) {
+                self.sendButton.isEnabled = true
+                self.rejectButton.isEnabled = true
+            }
+            if(state.contains(.broadcasting)) {
+                self.sendButton.isEnabled = false
+                self.rejectButton.isEnabled = false
+            }
+            if(state.contains(.success)) {
+                self.sendButton.isEnabled = false
+                self.rejectButton.isEnabled = false
+            }
+            if(state.contains(.error)) {
+                self.sendButton.isEnabled = false
+                self.rejectButton.isEnabled = false
+            }
+        }
+    }
 
-    // MARK: - User actions
-    //-------------------------------------------------------------------------------------------------------------------------------------------
+// MARK: - User actions
+
     @IBAction func actionSend(_ sender: UIButton) {
 
         print(#function)
+
         if (gasEstimate != nil) {
             do {
-                let rawTxPair = try walletService().broadcastTx(signingKey: walletService().defaultPrivateKey(), message: message, gasEstimate: gasEstimate!.gasInfo)
-                let txResponse = rawTxPair.txResponse
+                setButtonState([.broadcasting])
+                onMainThread {
+                    self.activityIndicator.startAnimating()
+                }
+                let signingKey = try walletService().defaultPrivateKey()
 
-                //TODO punch up response modal here
+                walletService().broadcastTx(signingKey: signingKey, messages: [message], gasEstimate: gasEstimate!) { pair, error in
 
-                completion()
-                if (txResponse.code == 0) {
-                    Utilities.log(txResponse.rawLog)
-                    try walletConnectService().send(.rawTxResponse(rawTxPair, for: request))
-                    onMainThread {
+                    self.onMainThread {
                         self.activityIndicator.stopAnimating()
-                        Utilities.showAlert(title: "Success", message: "\(txResponse.rawLog)") {
-                            self.dismiss(animated: true)
+                    }
+
+                    //TODO punch up response modal here
+                    self.completion()
+
+                    if let txPair = pair  {
+                        let txResponse = txPair.txResponse
+
+                        if (txResponse.code == 0) {
+                            Utilities.log(txResponse.rawLog)
+                            do {
+                                try self.walletConnectService().send(.rawTxResponse(txPair, for: self.request))
+                                let responseController = ProvenanceResponseViewController()
+                                responseController.rawResponsePair = txPair
+                                responseController.walletConnectRequest = self.walletConnectRequest
+                                self.onMainThread { [self]
+                                    self.navigationController?.pushViewController(responseController, animated: true)
+                                }
+                            } catch {
+                                Utilities.log(error)
+                                self.onMainThread { [self]
+                                    //TODO generic error modal
+                                    Utilities.showAlert(title: "Error", message: "\(error)") {
+                                        self.navigationController?.popToRootViewController(animated: true)
+                                    }
+                                }
+                            }
+                        } else {
+                            Utilities.log(txResponse.rawLog)
+                            do {
+                                try self.walletConnectService().send(.rawTxErrorResponse(txPair, for: self.request))
+                                self.onMainThread { [self]
+                                    //TODO response error modal
+                                    self.activityIndicator.stopAnimating()
+                                    Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)") {
+                                        self.dismiss(animated: true)
+                                    }
+                                }
+                            } catch {
+                                Utilities.log(error)
+                                self.onMainThread { [self]
+                                    //TODO generic error modal
+                                    Utilities.showAlert(title: "Error", message: "\(error)") {
+                                        self.navigationController?.popToRootViewController(animated: true)
+                                    }
+                                }
+                            }
                         }
                     }
-                } else {
-                    Utilities.log(txResponse.rawLog)
-                    try walletConnectService().send(.rawTxErrorResponse(rawTxPair, for: request))
-                    onMainThread {
-                        self.activityIndicator.stopAnimating()
-                        Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)") {
-                            self.dismiss(animated: true)
+                    else if let txError = error {
+                        //TODO generic error modal
+                        Utilities.showAlert(title: "Error", message: "\(error)") {
+                            self.navigationController?.popToRootViewController(animated: true)
                         }
                     }
                 }
             } catch {
                 Utilities.log(error)
-                //TODO make me a slide up modal and pop view on confirm
+                //TODO generic error modal
                 Utilities.showAlert(title: "Error", message: "\(error)") {
                     self.navigationController?.popToRootViewController(animated: true)
                 }
@@ -112,6 +184,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
     }
 
     @IBAction func actionReject(_ sender: Any) {
+        print(#function)
         Utilities.showConfirm(title: "Reject Request?",
                 message: "Press Continue to reject \(request.description() ?? "") from \(walletConnectService().dAppName() ?? "").",
                 continueHandler: {
@@ -123,17 +196,19 @@ class ConfirmBroadcastTxViewController: UIViewController {
                 cancelHandler: nil)
     }
 
-    // MARK: - Blockchain
+// MARK: - Blockchain
 
     func calculateGasFee() throws {
         let signingKey = try walletService().defaultPrivateKey()
 
-        try walletService().estimateTx(signingKey: signingKey, message: [message]) { [self] gasEstimate, error in
+        try walletService().estimateTx(signingKey: signingKey, messages: [message]) { [self] gasEstimate, error in
             if (error != nil) {
                 onMainThread {
                     [self]
                     //TODO make me a slide up modal
-                    Utilities.showAlert(title: "Error", message: "\(error)", completionHandler: nil)
+                    Utilities.showAlert(title: "Error", message: "\(error)") {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
                 }
             } else {
                 self.gasEstimate = gasEstimate
@@ -159,31 +234,12 @@ class ConfirmBroadcastTxViewController: UIViewController {
         messageKVArray.count
     }
 
-    private func flatJson(_ json: JSON, label: String = "", array: inout [(String, String)]) {
-        for (k, v) in json {
-            if (v.type == .dictionary) {
-                flatJson(v, label: k.camelCaseToWords().capitalized, array: &array)
-            } else if (v.type == .array) {
-                for a in v.arrayValue {
-                    flatJson(a, label: k.camelCaseToWords().capitalized, array: &array)
-                }
-            } else {
-                array.append((k.camelCaseToWords().capitalized, v.stringValue))
-            }
-        }
-    }
-
     func parseMessageFields() -> [(String, String)] {
         do {
             let jsonString = try message.jsonString()
             let json = JSON.init(parseJSON: jsonString)
-
             Utilities.log(jsonString)
-
-            var kvArr: [(String, String)] = []
-            flatJson(json, array: &kvArr)
-
-            return kvArr
+            return json.flatten()
         } catch {
             Utilities.log(error)
             return [("error", "\(error)")]
@@ -193,13 +249,9 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
 // MARK: - UITableViewDataSource
 extension ConfirmBroadcastTxViewController: UITableViewDataSource {
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func numberOfSections(in tableView: UITableView) -> Int {
         3
     }
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         if (section == 0) {
@@ -213,8 +265,6 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
         }
         return 0
     }
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if (indexPath.section == 0) && (indexPath.row == 0) {
@@ -240,7 +290,7 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
             } else if (indexPath.row == 1) { // let's call it the gas row
                 label.text = "Gas Fees"
                 if (gasEstimate != nil) {
-                    value.text = "\(gasEstimate!.gasFee ?? 0.0) \(gasEstimate!.denom ?? "Hash")"
+                    value.text = "\(walletService().nhashToHash(gasEstimate!.gasFee ?? 0)) Hash"
                 } else {
                     value.text = "Calculating..."
                 }
@@ -264,10 +314,7 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
-//-----------------------------------------------------------------------------------------------------------------------------------------------
 extension ConfirmBroadcastTxViewController: UITableViewDelegate {
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 
         if (section == 0) {
@@ -279,7 +326,6 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
         return messageType.substringAfterLast(".").camelCaseToWords()
     }
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 
         if let header = view as? UITableViewHeaderFooterView {
@@ -287,12 +333,10 @@ extension ConfirmBroadcastTxViewController: UITableViewDelegate {
         }
     }
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         0.01
     }
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         if (indexPath.section == 0) {

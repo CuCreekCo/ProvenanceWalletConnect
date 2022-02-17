@@ -30,13 +30,8 @@ extension Request {
         JSON.init(parseJSON: try metadata());
     }
 
-    func description() -> String {
-        do {
-            return try metadataJSON()["description"].stringValue
-        } catch {
-            Utilities.log(error)
-            return "undefined"
-        }
+    func description() throws -> String {
+        try metadataJSON()["description"].stringValue
     }
 
     func address() throws -> String {

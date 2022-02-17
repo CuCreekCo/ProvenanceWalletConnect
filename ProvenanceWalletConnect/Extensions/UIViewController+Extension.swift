@@ -50,4 +50,13 @@ extension UIViewController {
 		appDelegate().walletConnectService
 	}
 
+	func pushErrorView(message: String, error: String, okCompletion: (() -> Void)? = nil) {
+		let errorResponseView = ErrorResponseViewController()
+		errorResponseView.message = message
+		errorResponseView.error = error
+		errorResponseView.okCompletion = okCompletion
+
+		navigationController?.pushViewController(errorResponseView, animated: true)
+	}
+
 }

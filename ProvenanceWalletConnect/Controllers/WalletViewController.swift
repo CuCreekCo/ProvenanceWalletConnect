@@ -181,15 +181,6 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate {
 				onMainThread { [self]
 					self.labelTitle.text = self.walletService().defaultAddress()
 
-                    /*
-					do {
-						let coin = try self.walletService().queryBank()
-						self.labelBalance.text = "\((Int32(coin.amount) ?? 0 )/1000000000)"
-					} catch {
-						Utilities.log(error)
-					}
-                    */
-
 					self.setButtonState([.has_wallet])
 
 					if let url = self.applicationOpenURL() {
@@ -223,6 +214,10 @@ class WalletViewController: UIViewController, ScannerViewControllerDelegate {
 
 		} catch {
 			Utilities.log(error)
+			onMainThread {
+				self.pushErrorView(message: "Error", error: "\(error)")
+			}
+
 		}
 	}
 

@@ -18,6 +18,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
     var completion: () -> Void = {
     }
 
+    private var requestMessage: String!
     private var requestType: Notification.Name?
     private var request: Request!
     private var txMessageRequests: [TxMessageRequest] = []
@@ -46,15 +47,20 @@ class ConfirmBroadcastTxViewController: UIViewController {
         request = walletConnectRequest.1
 
         do {
+            requestMessage = try request.description()
+        } catch {
+            requestMessage = requestType?.rawValue
+        }
+
+        do {
             txMessageRequests = try request.decodeMessages()
             messageKVArray = parseMessageFields()
             setButtonState([.ready_to_broadcast])
         } catch {
+            Utilities.log(error)
             onMainThread {
-                //TODO make me a slide up modal and pop view on confirm
-                self.setButtonState([.error])
-                Utilities.showAlert(title: "Error", message: "\(error)") {
-                    self.navigationController?.popToRootViewController(animated: true)
+                self.pushErrorView(message: self.requestMessage, error: "\(error)") {
+                    self.sendPopAndCompleteError(error: "\(error)")
                 }
             }
         }
@@ -65,12 +71,25 @@ class ConfirmBroadcastTxViewController: UIViewController {
         do {
             try calculateGasFee()
         } catch {
-            //TODO make me a slide up modal and pop view on confirm
-            Utilities.showAlert(title: "Error", message: "\(error)") {
-                self.navigationController?.popToRootViewController(animated: true)
+            Utilities.log(error)
+            onMainThread {
+                self.pushErrorView(message: self.requestMessage, error: "\(error)") {
+                    self.sendPopAndCompleteError(error: "\(error)")
+                }
             }
         }
+    }
 
+    private func sendPopAndCompleteError(error: String) {
+        walletConnectService().send(.error(error, for: request))
+        completion()
+        navigationController?.navigationBar.isHidden = false
+        navigationController?.popToRootViewController(animated: true)
+    }
+    private func sendAndPopError(error: String) {
+        walletConnectService().send(.error(error, for: request))
+        navigationController?.navigationBar.isHidden = false
+        navigationController?.popToRootViewController(animated: true)
     }
 
     private func setButtonState(_ state: [TxState]) {
@@ -120,7 +139,6 @@ class ConfirmBroadcastTxViewController: UIViewController {
                         self.activityIndicator.stopAnimating()
                     }
 
-                    //TODO punch up response modal here
                     self.completion()
 
                     if let txPair = pair  {
@@ -138,10 +156,9 @@ class ConfirmBroadcastTxViewController: UIViewController {
                                 }
                             } catch {
                                 Utilities.log(error)
-                                self.onMainThread { [self]
-                                    //TODO generic error modal
-                                    Utilities.showAlert(title: "Error", message: "\(error)") {
-                                        self.navigationController?.popToRootViewController(animated: true)
+                                self.onMainThread {
+                                    self.pushErrorView(message: self.requestMessage, error: "\(error)") {
+                                        self.sendPopAndCompleteError(error: "\(error)")
                                     }
                                 }
                             }
@@ -150,35 +167,36 @@ class ConfirmBroadcastTxViewController: UIViewController {
                             do {
                                 try self.walletConnectService().send(.rawTxErrorResponse(txPair, for: self.request))
                                 self.onMainThread { [self]
-                                    //TODO response error modal
                                     self.activityIndicator.stopAnimating()
-                                    Utilities.showAlert(title: "Error", message: "\(txResponse.rawLog)") {
-                                        self.dismiss(animated: true)
+                                    self.pushErrorView(message: self.requestMessage, error: "\(txResponse.rawLog)") {
+                                        self.navigationController?.popToRootViewController(animated: true)
                                     }
                                 }
                             } catch {
                                 Utilities.log(error)
                                 self.onMainThread { [self]
-                                    //TODO generic error modal
-                                    Utilities.showAlert(title: "Error", message: "\(error)") {
-                                        self.navigationController?.popToRootViewController(animated: true)
+                                    self.pushErrorView(message: self.requestMessage, error: "\(error)") {
+                                        self.sendAndPopError(error: "\(error)")
                                     }
                                 }
                             }
                         }
                     }
                     else if let txError = error {
-                        //TODO generic error modal
-                        Utilities.showAlert(title: "Error", message: "\(error)") {
-                            self.navigationController?.popToRootViewController(animated: true)
+                        Utilities.log(txError)
+
+                        self.onMainThread {
+                            self.pushErrorView(message: self.requestMessage, error: "\(txError)") {
+                                self.sendAndPopError(error: "\(txError)")
+                            }
                         }
                     }
                 }
             } catch {
-                Utilities.log(error)
-                //TODO generic error modal
-                Utilities.showAlert(title: "Error", message: "\(error)") {
-                    self.navigationController?.popToRootViewController(animated: true)
+                self.onMainThread { [self]
+                    self.pushErrorView(message: self.requestMessage, error: "\(error)") {
+                        self.sendPopAndCompleteError(error: "\(error)")
+                    }
                 }
             }
         } else {
@@ -190,8 +208,14 @@ class ConfirmBroadcastTxViewController: UIViewController {
 
     @IBAction func actionReject(_ sender: Any) {
         print(#function)
+        var description = ""
+        do {
+            description = try request.description()
+        } catch {
+            Utilities.log(error)
+        }
         Utilities.showConfirm(title: "Reject Request?",
-                message: "Press Continue to reject \(request.description() ?? "") from \(walletConnectService().dAppName() ?? "").",
+                message: "Press Continue to reject \(description) from \(walletConnectService().dAppName() ?? "").",
                 continueHandler: {
                     [self]
                     self.walletConnectService().send(.reject(self.request))
@@ -210,9 +234,8 @@ class ConfirmBroadcastTxViewController: UIViewController {
             if (error != nil) {
                 onMainThread {
                     [self]
-                    //TODO make me a slide up modal
-                    Utilities.showAlert(title: "Error", message: "\(error)") {
-                        self.navigationController?.popToRootViewController(animated: true)
+                    pushErrorView(message: self.requestMessage, error: "\(error)") {
+                        sendPopAndCompleteError(error: "\(error)")
                     }
                 }
             } else {
@@ -277,8 +300,6 @@ extension ConfirmBroadcastTxViewController: UITableViewDataSource {
             return 2
         }
         return messageKVArray[section - 2].count
-
-        return 0
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 

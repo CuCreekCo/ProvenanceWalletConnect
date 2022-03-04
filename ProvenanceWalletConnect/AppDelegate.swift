@@ -27,10 +27,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
-        channel = ClientConnection.usingPlatformAppropriateTLS(for: group)
-                                  .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
-                                  .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
-                                           port: Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090)
+        let port = Int(Utilities.plistString("ProvenanceGRPCPort")) ?? 9090
+
+        if(port == 443) {
+            channel = ClientConnection.usingPlatformAppropriateTLS(for: group)
+                    .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
+                    .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
+                            port: port)
+        } else {
+            channel = ClientConnection.insecure(group: group)
+                    .withKeepalive(ClientConnectionKeepalive(timeout: .seconds(10)))
+                    .connect(host: Utilities.plistString("ProvenanceGRPCEndpoint"),
+                            port: port)
+        }
 
         walletService = WalletService(persistentContainer: persistentContainer, channel: channel)
 

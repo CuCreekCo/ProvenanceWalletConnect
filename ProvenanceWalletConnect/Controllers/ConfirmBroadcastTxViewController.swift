@@ -193,6 +193,7 @@ class ConfirmBroadcastTxViewController: UIViewController {
                     }
                 }
             } catch {
+                Utilities.log(error)
                 self.onMainThread { [self]
                     self.pushErrorView(message: self.requestMessage, error: "\(error)") {
                         self.sendPopAndCompleteError(error: "\(error)")

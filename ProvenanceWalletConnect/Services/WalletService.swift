@@ -24,6 +24,7 @@ class WalletService: NSObject {
 		container = persistentContainer
 
 		self.channel = channel
+		self.channel.connectivity.delegate = self
 		auth = AuthQuery(channel: channel)
 		bank = Bank(channel: channel)
 
@@ -350,4 +351,11 @@ class WalletService: NSObject {
 		}
 	}
 
+}
+
+extension WalletService: ConnectivityStateDelegate {
+	public func connectivityStateDidChange(from oldState: ConnectivityState, to newState: ConnectivityState) {
+		Utilities.log(oldState)
+		Utilities.log(newState)
+	}
 }
